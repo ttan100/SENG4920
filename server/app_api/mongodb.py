@@ -45,6 +45,10 @@ def add_meal():
 	output = {'name' : new_meal['name'], 'type' : new_meal['type']}
 	return jsonify({'result' : output})
 	
+@app.route('/meals', methods=['PATCH'])
+def modify_meal():
+	meals = mongo.db.meals
+	type = request.json()['type']
 	
 	
 if __name__ == '__main__':
