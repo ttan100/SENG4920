@@ -1,12 +1,10 @@
 # code for mongodb
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, json, abort
 from flask_pymongo import PyMongo
 from flask_restplus import Resource
-import json
 from bson import json_util
 from bson.objectid import ObjectId
-
 
 app = Flask(__name__)
 
@@ -25,6 +23,7 @@ def toJson(data):
 def hello():
 	return 'Hello world!'
 
+# meal data section
 @app.route('/meals', methods=['GET'])
 def get_all_meals():
 	meals = mongo.db.meals
@@ -39,41 +38,60 @@ def get_meal(meal_id):
 	meal = meals.find_one({'_id' : ObjectId(meal_id)})
 	return toJson(meal)
 
+# add a new meal to the database
+# requires ingredients list to be separated by a , and recipe steps by --
+# can be changed later if a better delimiter is thought of
 @app.route('/meals', methods=['POST'])
 def add_meal():
 	meals = mongo.db.meals
+	ingredients = [y for y in (x.strip() for x in request.form['ingredients'].split(',')) if y]
+	recipe = [y for y in (x.strip() for x in request.form['recipe'].split('--')) if y]
 	meal = meals.insert_one({
-		'name' : request.json['name'],
-		'cuisine' : request.json['cuisine'],
-		'difficulty' : request.json['difficulty'],
-		'total_cooking_time' : request.json['total_cooking_time'],
-		'ingredients' : request.json['ingredients'],
-		'recipe' : request.json['recipe'],
-		'ratings' : request.json['ratings']})
+		'name' : request.form['name'],
+		'cuisine' : request.form['cuisine'],
+		'difficulty' : request.form['difficulty'],
+		'total_cooking_time' : request.form['total_cooking_time'],
+		'ingredients' : ingredients,
+		'recipe' : recipe,
+		'ratings' : {
+			"0": "0",
+			"1": "0",
+			"2": "0",
+			"3": "0",
+			"4": "0",
+			"5": "0",
+			"avg": "0"
+		}})
 	# check to ensure that post worked correctly
 	new_meal = meals.find_one({
-		'name' : request.json['name'],
-		'cuisine' : request.json['cuisine'],
-		'difficulty' : request.json['difficulty'],
-		'total_cooking_time' : request.json['total_cooking_time'],
-		'ingredients' : request.json['ingredients'],
-		'recipe' : request.json['recipe'],
-		'ratings' : request.json['ratings']})
+		'name' : request.form['name'],
+		'cuisine' : request.form['cuisine'],
+		'difficulty' : request.form['difficulty'],
+		'total_cooking_time' : request.form['total_cooking_time'],
+		'ingredients' : ingredients,
+		'recipe' : recipe})
 	return toJson(new_meal)
-	
+
+# sets document field to new value, only does one at a time	
+# e.g. {"patch_field":"ratings.0", "patch_value":"4"}
 @app.route('/meals/<meal_id>', methods=['PATCH'])
 def update_ratings(meal_id):
 	meals = mongo.db.meals
-	meals.update_one({'_id' : ObjectId(meal_id)}, {'$addToSet' : {'ratings' : request.json['ratings']}}) 
+	meals.update_one({'_id' : ObjectId(meal_id)}, {"$set" : {request.json['patch_field'] : request.json['patch_value']}}, upsert=False) 
 	updated_item = meals.find_one({'_id' : ObjectId(meal_id)})
-	return updated_item
+	return toJson(updated_item)
+
 	
 @app.route('/meals/<meal_id>', methods=['DELETE'])
 def delete_meal(meal_id):	
 	meals = mongo.db.meals
 	result = meals.delete_one({'_id' : ObjectId(meal_id)})
-	return (result.deleted_count == 1)
-	
+	if result.deleted_count == 1:
+		return Response(status=201)
+	else:
+		return abort(404)
+
+# user data section	
 @app.route('/users', methods=['GET'])
 def get_all_users():
 	users = mongo.db.users
@@ -106,9 +124,9 @@ def add_user():
 def verify_user(user_id):
 	users = mongo.db.users
 	if request.json['patch'] == 'verified':
-		users.update_one({'_id' : ObjectId(user_id)}, {'verified' : 'verified'})
+		users.update_one({'_id' : ObjectId(user_id)}, {'verified' : 'verified'}, upsert=False)
 	else:	
-		users.update_one({'_id' : ObjectId(user_id)}, {'$addToSet' : {'meal_plans' : request.json['meal_plan']}})
+		users.update_one({'_id' : ObjectId(user_id)}, {'$addToSet' : {'meal_plans' : request.json['meal_plan']}}, upsert=False)
 	updated_item = users.find_one({'_id' : ObjectId(user_id)})
 	return toJson(updated_item)
 
@@ -118,6 +136,7 @@ def delete_user(user_id):
 	result = users.delete_one({'_id' : ObjectId(user_id)})
 	return (result.deleted_count == 1)
 
+# meal plan data section	
 @app.route('/meal_plans', methods=['GET'])
 def get_meal_plans():
 	meal_plans = mongo.db.meal_plans
@@ -127,7 +146,7 @@ def get_meal_plans():
 	return toJson(output)
 	
 @app.route('/meal_plans/<meal_plan_id>', methods=['GET'])
-def get_meal_plan():
+def get_meal_plan(meal_plan_id):
 	meal_plans = mongo.db.meal_plans
 	meal_plan = meal_plans.find_one({'_id' : ObjectId(meal_plan_id)})
 	return toJson(meal_plan)
@@ -141,9 +160,9 @@ def add_meal_plan():
 		'meal_ids' : request.json['meal_ids']})
 	
 @app.route('/meal_plans/<meal_plan_id>', methods=['PATCH'])
-def modify_meal_plan():
+def modify_meal_plan(meal_plan_id):
 	meal_plans = mongo.db.meal_plans
-	
+	meal_plans.update_one({'_id' : ObjectId(meal_plan_id)}, )
 
 
 if __name__ == '__main__':
