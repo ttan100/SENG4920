@@ -65,16 +65,16 @@ def add_meal():
 def update_ratings(meal_id):
 	meals = mongo.db.meals
 	meals.update_one({'_id' : ObjectId(meal_id)}, {'$addToSet' : {'ratings' : request.json['ratings']}}) 
-	updated_item = meals.find_one('id' : ObjectId(meal_id))
+	updated_item = meals.find_one({'_id' : ObjectId(meal_id)})
 	return updated_item
 	
-@app.route('meals/<meal_id>', methods=['DELETE'])
+@app.route('/meals/<meal_id>', methods=['DELETE'])
 def delete_meal(meal_id):	
 	meals = mongo.db.meals
-	result = meals.delete_one('_id' : ObjectId(meal_id))
+	result = meals.delete_one({'_id' : ObjectId(meal_id)})
 	return (result.deleted_count == 1)
 	
-@app.route('/users', method=['GET'])
+@app.route('/users', methods=['GET'])
 def get_all_users():
 	users = mongo.db.users
 	output = []
@@ -82,13 +82,13 @@ def get_all_users():
 		output.append(u)
 	return toJson(output)
 	
-@app.route('/users/<user_id>', method=['GET'])
+@app.route('/users/<user_id>', methods=['GET'])
 def get_user(user_id):
 	users = mongo.db.users
 	user = users.find_one('_id', ObjectId('user_id'))
 	return toJson(user)
 	
-@app.route('/users', method=['POST'])
+@app.route('/users', methods=['POST'])
 def add_user():
 	users = mongo.db.users
 	user = users.insert_one({
@@ -102,18 +102,49 @@ def add_user():
 		'meal_plans' : []})
 	return toJson(new_user)
 
-@app.route('users/<user_id>', method=['PATCH'])
+@app.route('/users/<user_id>', methods=['PATCH'])
 def verify_user(user_id):
 	users = mongo.db.users
-	users.update_one('_id' : ObjectId(user_id), {'verified' : 'verified'})
-	updated_item = users.find_one('_id' : ObjectId(user_id))
+	if request.json['patch'] == 'verified':
+		users.update_one({'_id' : ObjectId(user_id)}, {'verified' : 'verified'})
+	else:	
+		users.update_one({'_id' : ObjectId(user_id)}, {'$addToSet' : {'meal_plans' : request.json['meal_plan']}})
+	updated_item = users.find_one({'_id' : ObjectId(user_id)})
 	return toJson(updated_item)
-	
-@app.route('users/<user_id>', method=['DELETE']
+
+@app.route('/users/<user_id>', methods=['DELETE'])
 def delete_user(user_id):
 	users = mongo.db.users
-	result = users.delete_one('_id' : ObjectId(user_id))
+	result = users.delete_one({'_id' : ObjectId(user_id)})
 	return (result.deleted_count == 1)
+
+@app.route('/meal_plans', methods=['GET'])
+def get_meal_plans():
+	meal_plans = mongo.db.meal_plans
+	output = []
+	for m in meal_plans():
+		output.append(m)
+	return toJson(output)
+	
+@app.route('/meal_plans/<meal_plan_id>', methods=['GET'])
+def get_meal_plan():
+	meal_plans = mongo.db.meal_plans
+	meal_plan = meal_plans.find_one({'_id' : ObjectId(meal_plan_id)})
+	return toJson(meal_plan)
+
+@app.route('/meal_plans', methods=['POST'])
+def add_meal_plan():
+	meal_plans = mongo.db.meal_plans
+	meal_plan = meal_plans.insert_one({
+		'duration' : request.json['duration'],
+		'start_date' : request.json['start_date'],
+		'meal_ids' : request.json['meal_ids']})
+	
+@app.route('/meal_plans/<meal_plan_id>', methods=['PATCH'])
+def modify_meal_plan():
+	meal_plans = mongo.db.meal_plans
+	
+
 
 if __name__ == '__main__':
 	app.run(debug=True)
