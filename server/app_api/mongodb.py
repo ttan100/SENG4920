@@ -1,6 +1,6 @@
 # code for mongodb
 
-from flask import Flask, jsonify, request, json, abort
+from flask import Flask, jsonify, request, json, abort, render_template
 from flask_pymongo import PyMongo
 from flask_restplus import Resource
 from bson import json_util
@@ -22,7 +22,7 @@ def toJson(data):
 @app.route('/')
 def hello():
 #	mongo.db.users.create_index("email", unique=True)
-	return 'Hello world!'
+	return render_template('index.html')
 
 # meal data section
 @app.route('/meals', methods=['GET'])
