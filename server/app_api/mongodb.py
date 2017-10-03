@@ -21,6 +21,7 @@ def toJson(data):
 # test that the index uri works
 @app.route('/')
 def hello():
+#	mongo.db.users.create_index("email", unique=True)
 	return 'Hello world!'
 
 # meal data section
@@ -39,12 +40,12 @@ def get_meal(meal_id):
 	return toJson(meal)
 
 # add a new meal to the database
-# requires ingredients list to be separated by a , and recipe steps by --
+# requires ingredients list to be separated by a -- and recipe steps by --
 # can be changed later if a better delimiter is thought of
 @app.route('/meals', methods=['POST'])
 def add_meal():
 	meals = mongo.db.meals
-	ingredients = [y for y in (x.strip() for x in request.form['ingredients'].split(',')) if y]
+	ingredients = [y for y in (x.strip() for x in request.form['ingredients'].split('--')) if y]
 	recipe = [y for y in (x.strip() for x in request.form['recipe'].split('--')) if y]
 	meal = meals.insert_one({
 		'name' : request.form['name'],
@@ -110,23 +111,24 @@ def get_user(user_id):
 def add_user():
 	users = mongo.db.users
 	user = users.insert_one({
-		'email' : request.json['email'],
-		'password' : request.json['password'],
+		'email' : request.form['email'],
+		'name' : request.form['name'],
+		'password' : request.form['password'],
 		'verified' : 'not_verified',
-		'meal_plans' : []})
+		'meal_plans-ids' : []})
 	new_user = users.find_one({
-		'email' : request.json['email'],
-		'password' : request.json['password'],
-		'meal_plans' : []})
+		'email' : request.form['email']})
 	return toJson(new_user)
 
+# only does update for verification and meal plan adding	
 @app.route('/users/<user_id>', methods=['PATCH'])
 def verify_user(user_id):
 	users = mongo.db.users
 	if request.json['patch'] == 'verified':
 		users.update_one({'_id' : ObjectId(user_id)}, {'verified' : 'verified'}, upsert=False)
 	else:	
-		users.update_one({'_id' : ObjectId(user_id)}, {'$addToSet' : {'meal_plans' : request.json['meal_plan']}}, upsert=False)
+		meal_plan_ids = [y for y in (x.strip() for x in request.form['meal_plan_ids'].split('--')) if y]
+		users.update_one({'_id' : ObjectId(user_id)}, {'meal_plan_ids' : meal_plan_ids}, upsert=False)
 	updated_item = users.find_one({'_id' : ObjectId(user_id)})
 	return toJson(updated_item)
 
@@ -134,7 +136,10 @@ def verify_user(user_id):
 def delete_user(user_id):
 	users = mongo.db.users
 	result = users.delete_one({'_id' : ObjectId(user_id)})
-	return (result.deleted_count == 1)
+	if result.deleted_count == 1:
+		return Response(status=201)
+	else:
+		return abort(404)
 
 # meal plan data section	
 @app.route('/meal_plans', methods=['GET'])
@@ -154,16 +159,24 @@ def get_meal_plan(meal_plan_id):
 @app.route('/meal_plans', methods=['POST'])
 def add_meal_plan():
 	meal_plans = mongo.db.meal_plans
+	meal_ids = [y for y in (x.strip() for x in request.form['meal_ids'].split('--')) if y]	
 	meal_plan = meal_plans.insert_one({
 		'duration' : request.json['duration'],
 		'start_date' : request.json['start_date'],
-		'meal_ids' : request.json['meal_ids']})
-	
+		'meal_ids' : meal_ids})
+	new_meal_plan = meals.find_one({
+		'duration' : request.json['duration'],
+		'start_date' : request.json['start_date'],
+		'meal_ids' : meal_ids})
+	return toJson(new_meal_plan)
+
 @app.route('/meal_plans/<meal_plan_id>', methods=['PATCH'])
 def modify_meal_plan(meal_plan_id):
 	meal_plans = mongo.db.meal_plans
-	meal_plans.update_one({'_id' : ObjectId(meal_plan_id)}, )
-
-
+	meal_ids = [y for y in (x.strip() for x in request.form['meal_ids'].split('--')) if y]	
+	meal_plans.update_one({'_id' : ObjectId(meal_plan_id)}, {'meal_plan_id' : meal_ids})
+	updated_meal_plan = meal_plans.find_one({'_id' : ObjectId(meal_plan_id)})
+	return toJson(updated_meal_plan)
+	
 if __name__ == '__main__':
 	app.run(debug=True)
