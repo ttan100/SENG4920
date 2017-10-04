@@ -80,7 +80,7 @@ header, footer, article, nav, div {
           {% endfor %}
           </ol>
         </p>
-        <button> Add meal </button>
+        <button type="button" onclick="addMealToPlan({{loop.index0}}, '{{meals[loop.index0].name}}')"> Add meal </button>
       </p>
     {% endfor %}
     </article>
@@ -88,23 +88,28 @@ header, footer, article, nav, div {
   <div id="siteAds">Ads</div>
   <footer id="pageFooter">Footer</footer>
 
-  <!--
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.min.js"></script>
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
-    <script type="text/javascript">
-	    class Hello extends React.Component {
-  			render() {
-    			return React.createElement('h2', null, `${this.props.toWhat}`);
-  			}
+<!-- Page scripts -->
+<script>
+	var plan = [];
+	function displayPlan(){
+		console.log(plan);
+		var e = document.getElementById("siteAds");
+		var t;
+		e.innerHTML = "";
+		for (m in plan) {
+			t = document.createElement("div");
+			t.innerHTML = plan[m].name;
+			e.appendChild(t);
 		}
-	
-		ReactDOM.render(
-  			React.createElement(Hello, {toWhat: '{{ meals[0].name }}'}, null),
-  			document.getElementById('pageHeader')
-		);
-    </script>
--->
+	}
+
+	function addMealToPlan(mealindex, mealname) {	
+		var m = {"i": mealindex, "name": mealname}
+  		plan.push(m);
+  		displayPlan();
+  	}
+</script>
+
 
 <!-- bootstrap required scripts -->
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
