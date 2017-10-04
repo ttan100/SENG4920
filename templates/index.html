@@ -54,7 +54,13 @@ header, footer, article, nav, div {
     {%for meal in meals%}
     <article id="mainArticle">
       <h4> {{meal.name}} </h4>
-      <p> {{ meal.recipe}} </p>
+      {{meal.cooking_time}}<br>
+      {{meal.ingredients}}<br>
+      <p> 
+        {% for step in meal.recipe %}
+		Step 1:{{step}}<br> 
+        {% endfor %}
+      </p>
     </article>
   {% endfor %}
   <nav id="mainNav">Nav</nav>
