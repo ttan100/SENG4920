@@ -19,10 +19,14 @@ def toJson(data):
 	return json.dumps(data, default=json_util.default)
 
 # test that the index uri works
-@app.route('/')
-def hello():
+@app.route('/', methods=['GET'])
+def main():
 #	mongo.db.users.create_index("email", unique=True)
-	return render_template('index.html')
+	meals = mongo.db.meals
+	output = []
+	for m in meals.find():
+		output.append(m)
+	return render_template('index.html', meals=output)
 
 # meal data section
 @app.route('/meals', methods=['GET'])
