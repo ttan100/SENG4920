@@ -53,8 +53,8 @@ header, footer, article, nav, div {
   <header id="pageHeader">
   	<h1>Meealo Meal Planner</h2>
   </header>
-    {%for meal in meals%}
     <article id="mainArticle">
+    {%for meal in meals%}
       <h2> {{meal.name}} </h2>
       <p>
         Approximate cooking time: {{meal.total_cooking_time}}<br>
@@ -75,8 +75,8 @@ header, footer, article, nav, div {
         </ol>
       </p>
       <button> Add meal </button>
+    {% endfor %}
     </article>
-  {% endfor %}
   <nav id="mainNav">Nav</nav>
   <div id="siteAds">Ads</div>
   <footer id="pageFooter">Footer</footer>
