@@ -55,17 +55,17 @@ header, footer, article, nav, div {
     <article id="mainArticle">
       <h3> {{meal.name}} </h3>
       <p>
-        Approximate cooking time:<br>
-        {{meal.total_cooking_time}}<br>
+        Approximate cooking time: {{meal.total_cooking_time}}<br>
       </p>
-      <p>
-        Ingredients:<br>
-        {{meal.ingredients}}<br>
-      </p>
+      {% for ingredient in meal.ingredients %}
+          <li>
+            <ul>{{ingredient}}</ul>
+        {% endfor %}
       <p> 
 		Recipe:<br>
         {% for step in meal.recipe %}
-		Step 1:{{step}}<br> 
+          <li>
+            <ul>{{step}}</ul>
         {% endfor %}
       </p>
     </article>
