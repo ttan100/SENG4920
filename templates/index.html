@@ -54,18 +54,15 @@ header, footer, article, nav, div {
     {%for meal in meals%}
     <article id="mainArticle">
       <h3> {{meal.name}} </h3>
-      <p>
-        Approximate cooking time:<br>
-        {{meal.total_cooking_time}}<br>
-      </p>
-      <p>
-        Ingredients:<br>
-        {{meal.ingredients}}<br>
-      </p>
+      Cooking time: {{meal.cooking_time}}<br>
+      <h3>Ingredients </h3> 
+      <p> {% for ingredient in meal.ingredients %}
+		- {{ingredient}}<br><br> 
+        {% endfor %}
+      <h3>Instructions:</h3>
       <p> 
-		Recipe:<br>
         {% for step in meal.recipe %}
-		Step 1:{{step}}<br> 
+		Step {{loop.index}}: {{step}}<br><br> 
         {% endfor %}
       </p>
     </article>
@@ -75,6 +72,7 @@ header, footer, article, nav, div {
   <footer id="pageFooter">Footer</footer>
 </body>
 
+<<!--
  <<!-- scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.min.js"></script>
@@ -92,5 +90,6 @@ header, footer, article, nav, div {
   			document.getElementById('pageHeader')
 		);
     </script>
+-->
 
 </html>
