@@ -58,20 +58,21 @@ header, footer, article, nav, div {
         Approximate cooking time: {{meal.total_cooking_time}}<br>
       </p>
         <h3>Ingredients </h3>
-          <li>
+          <ul>
             {% for ingredient in meal.ingredients %}
-              <ul>{{ingredient}}</ul>
+              <li>{{ingredient}}</li>
             {% endfor %}
-          </li>
+          </ul>
        
       <h3>Instructions:</h3>
       <p> 
-        <li>
+        <ol>
         {% for step in meal.recipe %}
-            <ul>Step {{loop.index}}: {{step}}</ul>
+            <li>{{step}}</li>
         {% endfor %}
-        </li>
+        </ol>
       </p>
+      <button> Add meal </button>
     </article>
   {% endfor %}
   <nav id="mainNav">Nav</nav>
