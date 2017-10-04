@@ -51,30 +51,29 @@ header, footer, article, nav, div {
 </style>
 <body>
   <header id="pageHeader">
-  	<h1>Meealo Meal Planner</h2>
+  	<h1>Meealo Meal Planner</h1>
   </header>
     <article id="mainArticle">
     {%for meal in meals%}
-      <h2> {{meal.name}} </h2>
-      <p>
-        Approximate cooking time: {{meal.total_cooking_time}}<br>
-      </p>
-        <h3>Ingredients </h3>
+      <p id="something">
+        <h2>{{meal.name}}</h2>
+        <p>Approximate cooking time: {{meal.total_cooking_time}}</p>
+        <h3>Ingredients</h3>
           <ul>
             {% for ingredient in meal.ingredients %}
               <li>{{ingredient}}</li>
             {% endfor %}
-          </ul>
-       
-      <h3>Instructions:</h3>
-      <p> 
-        <ol>
-        {% for step in meal.recipe %}
+          </ul> 
+        <h3>Instructions:</h3>
+        <p> 
+          <ol>
+          {% for step in meal.recipe %}
             <li>{{step}}</li>
-        {% endfor %}
-        </ol>
+          {% endfor %}
+          </ol>
+        </p>
+        <button> Add meal </button>
       </p>
-      <button> Add meal </button>
     {% endfor %}
     </article>
   <nav id="mainNav">Nav</nav>
