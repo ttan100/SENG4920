@@ -25,14 +25,21 @@ def hello():
 	meals = get_all_meals()
 	return render_template('index.html', meals=meals)
 
-# meal data section
-@app.route('/meals', methods=['GET'])
 def get_all_meals():
 	meals = mongo.db.meals
 	output = []
 	for m in meals.find():
 		output.append(m)
 	return output
+
+# meal data section
+@app.route('/meals', methods=['GET'])
+def get_all_meals_JSON():
+	meals = mongo.db.meals
+	output = []
+	for m in meals.find():
+		output.append(m)
+	return toJson(output)
 	
 @app.route('/meals/<meal_id>', methods=['GET'])
 def get_meal(meal_id):
