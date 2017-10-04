@@ -1,21 +1,3 @@
-Skip to content
-This repository
-Search
-Pull requests
-Issues
-Marketplace
-Explore
- @thomascytang
- Sign out
- Unwatch 3
-  Star 1  Fork 0 ttan100/SENG4920
- Code  Issues 0  Pull requests 0  Projects 0  Wiki Insights 
-Branch: db_access Find file Copy pathSENG4920/server/app_api/mongodb.py
-c76b369  23 hours ago
-@keithlai124 keithlai124 added a random default homepage
-2 contributors @ttan100 @keithlai124
-RawBlameHistory     
-183 lines (160 sloc)  5.68 KB
 # code for mongodb
 
 from flask import Flask, jsonify, request, json, abort, render_template

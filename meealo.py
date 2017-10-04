@@ -83,6 +83,7 @@ def update_ratings(meal_id):
 	updated_item = meals.find_one({'_id' : ObjectId(meal_id)})
 	return toJson(updated_item)
 
+
 	
 @app.route('/meals/<meal_id>', methods=['DELETE'])
 def delete_meal(meal_id):	
