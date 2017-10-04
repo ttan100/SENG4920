@@ -1,0 +1,35 @@
+{
+	"name": "Chicken tenders in peanut sauce",
+	"cuisine": "N/A",
+	"difficulty": "Easy",
+	"total_cooking_time": "50mins",
+	"ingredients": ["2 tbs extra virgin olive oil", "600g chicken tenderloins", "1 green capsicum", "1 red capsicum", "3 garlic cloves", "2 teaspoons ginger", "1/2 teaspoon chilli flakes (optional)", "70g tomato paste", "375ml chicken stock", "70g peanut butter", "2 teaspoon fresh thyme", "165ml can coconut milk"],
+	"recipe": ["Heat half the oil in a large saucepan over high heat. Cook half the chicken, turning halfway, for 4 minutes or until golden. Transfer to a plate. Repeat with the remaining chicken.", "Heat the remaining oil in the saucepan. Reduce heat to medium. Add the capsicum. Cook, stirring occasionally, for 7 minutes or until softened. Add the garlic and ginger and cook, stirring, for 1 minute or until aromatic. Stir in the curry powder and chilli, if you like. Cook for 30 seconds or until aromatic. Add the tomato paste and stir for 1 minute. Add the stock, peanut butter and thyme. Stir well to combine. Bring to the boil. Reduce heat to low and cook for 10 minutes or until mixture has thickened slightly. Season.", "Return the chicken to the saucepan. Cook for 3-5 minutes or until the chicken is just cooked though. Divide among serving plates. Drizzle with coconut milk and sprinkle with coriander."],
+	"ratings": {
+        "0": "0",
+        "1": "0",
+        "2": "0",
+        "3": "0",
+        "4": "0",
+        "5": "0",
+        "avg": "0"
+	}
+}
+{
+	"name" : "Sweet and sour pork",
+	"cuisine" : "chinese",
+	"difficulty" : "advanced",
+	"total_cooking_time" : "1h30mins",
+	"ingredients" : ["600g pork belly", "1 tablespoon light soy sauce", "1 garlic clove", "1/2 teaspoon ground black pepper", "50g (1/3 cup) plain flour", "2 teaspoons vegetable oil", "1 brown onion", "1 tomato", "2 green shallots", "sweet and sour sauce 100ml"],
+	"recipes" : ["Place the pork belly, soy sauce, garlic and pepper in a large glass or ceramic bowl. Toss to combine and set aside for 30 minutes to marinate.", "Meanwhile, for the sauce, place the sugar, juice, rice vinegar, ketchup, soy sauce and Chinese five spice in a saucepan over medium-high heat. Simmer for 5 minutes.", "Combine the cornflour and water in a bowl. Add to the sauce and simmer for 2 minutes or until thickened slightly. Remove from heat. Set aside.", "Fill a wok one-third full with oil. Heat to 180C over high heat. Toss pork in plain flour. Cook pork, in batches, for 4 minutes or until golden brown. Drain on paper towel.", "Remove oil from wok. Wipe clean with paper towel. Heat extra oil in wok over high heat. Add the onion and stir-fry for 1 minute. Add the tomato and shallot.", "Stir-fry for 1 minute or until the vegetables are tender crisp. Return the pork to the wok and pour over the sauce. Toss to coat. Serve warm."],
+	"ratings" : {
+        "0": "0",
+        "1": "0",
+        "2": "0",
+        "3": "0",
+        "4": "0",
+        "5": "0",
+        "avg": "0"
+	}
+	
+}
