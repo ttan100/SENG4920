@@ -52,10 +52,13 @@ body {
         </form></div></div></div>
     <div class="col-sm-6">
     {%for meal in meals%}
-      <p id="something">
-        <h4>{{meal.name}}</h2>
+      <details id="something">
+        <summary>
+        <h2>{{meal.name}}</h2>
+		
         <p>Approximate cooking time: {{meal.total_cooking_time}}</p>
-        <h5>Ingredients</h3>
+		</summary>        
+		<h5>Ingredients</h3>
           <ul>
             {% for ingredient in meal.ingredients %}
               <li>{{ingredient}}</li>
@@ -70,7 +73,7 @@ body {
           </ol>
         </p>
         <button type="button" onclick="addMealToPlan({{loop.index0}}, '{{meals[loop.index0].name}}')"> Add meal </button>
-      </p>
+      </details>
       <hr>
     {% endfor %}
     </div>
