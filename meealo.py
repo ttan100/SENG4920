@@ -5,13 +5,16 @@ from flask_pymongo import PyMongo
 from flask_restplus import Resource
 from bson import json_util
 from bson.objectid import ObjectId
+import os
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
 
 app = Flask(__name__)
 
 # connect to plannerdb in external database
 app.config['MONGO_DBNAME'] = 'plannerdb'
-app.config['MONGO_URI'] = 'mongodb://meealo:meealo123@ds139904.mlab.com:39904/plannerdb'
-
+app.config['MONGO_URI'] = os.getenv('MONGO_URL')
 mongo = PyMongo(app)
 
 # dumps mongo data object as json
