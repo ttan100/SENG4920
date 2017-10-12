@@ -20,7 +20,7 @@ def toJson(data):
 
 # test that the index uri works
 @app.route('/')
-def hello():
+def home():
 #	mongo.db.users.create_index("email", unique=True)
 	
 	if 'name' in session:
@@ -52,24 +52,35 @@ def get_meal(meal_id):
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
+	# If you press the button to login
 	if request.method == 'POST':
 		users = mongo.db.users
+		# Try and find your user in the database
 		login_user = users.find_one({'email' : request.form['email']})
         
+		# If found, login_user will not be None
 		if login_user:
+
+			# If passwords match, successfully login
 			if request.form['pass'] == login_user['pass']:			
 				session['name'] = login_user['name']
-				return redirect(url_for('hello'))
+				return redirect(url_for('home'))
 
+		# If no login found or password doesn't match, tell them
 		return 'Invalid username/password combination'
+
+	# If it's a get request, render the login.html template
 	return render_template('login.html')
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
 	if request.method == 'POST':
 		users = mongo.db.users
+		
+		# Check if user exists
 		existing_user = users.find_one({'email' : request.form['email']})
 
+		# If not found, then add user into the database
 		if existing_user is None:
 			users.insert({
 				'email' : request.form['email'],
@@ -77,11 +88,15 @@ def register():
 				'pass' : request.form['pass'],
 				'verified' : 'not_verified',
 				'meal_plans-ids' : []})
-			session['name'] = request.form['name']
-			return redirect(url_for('hello'))
-        
-		return 'That username already exists!'
 
+			# Automatically login
+			session['name'] = request.form['name']
+			return redirect(url_for('home'))
+        
+		# If there already is an existing user, tell them!
+		return 'That email is already being used!'
+
+	# If it's a get method, render register.html
 	return render_template('register.html')
 
 # add a new meal to the database
