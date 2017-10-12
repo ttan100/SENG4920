@@ -1,6 +1,6 @@
 # code for mongodb
 
-from flask import Flask, jsonify, request, json, abort, render_template
+from flask import Flask, jsonify, request, json, abort, session, redirect, render_template, url_for
 from flask_pymongo import PyMongo
 from flask_restplus import Resource
 from bson import json_util
@@ -22,6 +22,9 @@ def toJson(data):
 @app.route('/')
 def hello():
 #	mongo.db.users.create_index("email", unique=True)
+	
+	if 'name' in session:
+		return 'hey there, ' + session['name']
 	meals = get_all_meals()
 	return render_template('index.html', meals=meals)
 
@@ -46,6 +49,40 @@ def get_meal(meal_id):
 	meals = mongo.db.meals
 	meal = meals.find_one({'_id' : ObjectId(meal_id)})
 	return toJson(meal)
+
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    if request.method == 'POST':
+        users = mongo.db.users
+        login_user = users.find_one({'email' : request.form['email']})
+
+        if login_user:
+            if request.form['pass'] == login_user['pass']:
+                session['name'] = request.form['name']
+                return redirect(url_for('hello'))
+
+        return 'Invalid username/password combination'
+    return render_template('login.html')
+
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+	if request.method == 'POST':
+		users = mongo.db.users
+		existing_user = users.find_one({'email' : request.form['email']})
+
+		if existing_user is None:
+			users.insert({
+				'email' : request.form['email'],
+				'name' : request.form['name'],
+				'pass' : request.form['pass'],
+				'verified' : 'not_verified',
+				'meal_plans-ids' : []})
+			session['name'] = request.form['name']
+			return redirect(url_for('hello'))
+        
+		return 'That username already exists!'
+
+	return render_template('register.html')
 
 # add a new meal to the database
 # requires ingredients list to be separated by a -- and recipe steps by --
@@ -188,4 +225,5 @@ def modify_meal_plan(meal_plan_id):
 	return toJson(updated_meal_plan)
 	
 if __name__ == '__main__':
+	app.secret_key = 'mysecret'
 	app.run(debug=True)
