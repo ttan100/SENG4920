@@ -52,17 +52,17 @@ def get_meal(meal_id):
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
-    if request.method == 'POST':
-        users = mongo.db.users
-        login_user = users.find_one({'email' : request.form['email']})
+	if request.method == 'POST':
+		users = mongo.db.users
+		login_user = users.find_one({'email' : request.form['email']})
+        
+		if login_user:
+			if request.form['pass'] == login_user['pass']:			
+				session['name'] = login_user['name']
+				return redirect(url_for('hello'))
 
-        if login_user:
-            if request.form['pass'] == login_user['pass']:
-                session['name'] = request.form['name']
-                return redirect(url_for('hello'))
-
-        return 'Invalid username/password combination'
-    return render_template('login.html')
+		return 'Invalid username/password combination'
+	return render_template('login.html')
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
