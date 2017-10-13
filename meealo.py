@@ -90,7 +90,7 @@ def register():
 				'name' : request.form['name'],
 				'pass' : request.form['pass'],
 				'verified' : 'not_verified',
-				'meal_plans-ids' : []})
+				'meal_plans_ids' : []})
 
 			# Automatically login
 			session['name'] = request.form['name']
@@ -179,7 +179,7 @@ def add_user():
 		'name' : request.form['name'],
 		'password' : request.form['password'],
 		'verified' : 'not_verified',
-		'meal_plans-ids' : []})
+		'meal_plan_ids' : []})
 	new_user = users.find_one({
 		'email' : request.form['email']})
 	return toJson(new_user)
@@ -238,7 +238,7 @@ def add_meal_plan():
 def modify_meal_plan(meal_plan_id):
 	meal_plans = mongo.db.meal_plans
 	meal_ids = [y for y in (x.strip() for x in request.form['meal_ids'].split('--')) if y]	
-	meal_plans.update_one({'_id' : ObjectId(meal_plan_id)}, {'meal_plan_id' : meal_ids})
+	meal_plans.update_one({'_id' : ObjectId(meal_plan_id)}, {'meal_plan_ids}' : meal_ids})
 	updated_meal_plan = meal_plans.find_one({'_id' : ObjectId(meal_plan_id)})
 	return toJson(updated_meal_plan)
 	
