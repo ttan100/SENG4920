@@ -1,21 +1,12 @@
 # code for mongodb
 
-from flask import Flask, jsonify, request, json, abort, session, redirect, render_template, url_for
+from flask import Flask, jsonify, request, json, abort, session, redirect, render_template, url_for, Response
 from flask_pymongo import PyMongo
 from flask_restplus import Resource
 from bson import json_util
-from bson.objectid import ObjectId
-import os
-from dotenv import load_dotenv, find_dotenv
-
-load_dotenv(find_dotenv())
+from models import *
 
 app = Flask(__name__)
-
-# connect to plannerdb in external database
-app.config['MONGO_DBNAME'] = 'plannerdb'
-app.config['MONGO_URI'] = os.getenv('MONGO_URL')
-mongo = PyMongo(app)
 
 # dumps mongo data object as json
 def toJson(data):
@@ -23,41 +14,18 @@ def toJson(data):
 
 # test that the index uri works
 @app.route('/')
-def home():
+def index():
 #	mongo.db.users.create_index("email", unique=True)
-	
 	if 'name' in session:
 		return 'hey there, ' + session['name']
-	meals = get_all_meals()
+	meals = Meal.objects.as_pymongo()
 	return render_template('index.html', meals=meals)
-
-def get_all_meals():
-	meals = mongo.db.meals
-	output = []
-	for m in meals.find():
-		output.append(m)
-	return output
-
-# meal data section
-@app.route('/meals', methods=['GET'])
-def get_all_meals_JSON():
-	meals = mongo.db.meals
-	output = []
-	for m in meals.find():
-		output.append(m)
-	return toJson(output)
-	
-@app.route('/meals/<meal_id>', methods=['GET'])
-def get_meal(meal_id):
-	meals = mongo.db.meals
-	meal = meals.find_one({'_id' : ObjectId(meal_id)})
-	return toJson(meal)
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
 	# If you press the button to login
 	if request.method == 'POST':
-		users = mongo.db.users
+		users = User.objects.get(email=request.form['email'])
 		# Try and find your user in the database
 		login_user = users.find_one({'email' : request.form['email']})
         
@@ -77,170 +45,132 @@ def login():
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
-	if request.method == 'POST':
-		users = mongo.db.users
-		
-		# Check if user exists
-		existing_user = users.find_one({'email' : request.form['email']})
+    if request.method == 'POST':
+        # Check if user exists
+        existing_user = User._get_collection().find_one({'email' : request.form['email']})
+        # If not found, then add user into the database
+        if existing_user is None:
+            user = User()
+            user.email=request.form['email']
+            user.name=request.form['name']
+            user.password=request.form['pass']
+            user.save()
+            
+            # Automatically login
+            session['name'] = request.form['name']
+            return redirect(url_for('index'))
 
-		# If not found, then add user into the database
-		if existing_user is None:
-			users.insert({
-				'email' : request.form['email'],
-				'name' : request.form['name'],
-				'pass' : request.form['pass'],
-				'verified' : 'not_verified',
-				'meal_plans_ids' : []})
+        # If there already is an existing user, tell them!
+        return 'That email is already being used!'
 
-			# Automatically login
-			session['name'] = request.form['name']
-			return redirect(url_for('home'))
-        
-		# If there already is an existing user, tell them!
-		return 'That email is already being used!'
+    # If it's a get method, render register.html
+    return render_template('register.html')
 
-	# If it's a get method, render register.html
-	return render_template('register.html')
-
-# add a new meal to the database
-# requires ingredients list to be separated by a -- and recipe steps by --
-# can be changed later if a better delimiter is thought of
+    
+@app.route('/meals/<meal_id>', methods=['GET'])
+def get_meal(meal_id):
+    return Meal.objects(id=meal_id).to_json()
+    
 @app.route('/meals', methods=['POST'])
 def add_meal():
-	meals = mongo.db.meals
-	ingredients = [y for y in (x.strip() for x in request.form['ingredients'].split('--')) if y]
-	recipe = [y for y in (x.strip() for x in request.form['recipe'].split('--')) if y]
-	meal = meals.insert_one({
-		'name' : request.form['name'],
-		'cuisine' : request.form['cuisine'],
-		'difficulty' : request.form['difficulty'],
-		'total_cooking_time' : request.form['total_cooking_time'],
-		'ingredients' : ingredients,
-		'recipe' : recipe,
-		'ratings' : {
-			"0": "0",
-			"1": "0",
-			"2": "0",
-			"3": "0",
-			"4": "0",
-			"5": "0",
-			"avg": "0"
-		}})
-	# check to ensure that post worked correctly
-	new_meal = meals.find_one({
-		'name' : request.form['name'],
-		'cuisine' : request.form['cuisine'],
-		'difficulty' : request.form['difficulty'],
-		'total_cooking_time' : request.form['total_cooking_time'],
-		'ingredients' : ingredients,
-		'recipe' : recipe})
-	return toJson(new_meal)
+    ingredients = [y for y in (x.strip() for x in request.form['ingredients'].split('--')) if y]
+    recipe = [y for y in (x.strip() for x in request.form['recipe'].split('--')) if y]
 
-# sets document field to new value, only does one at a time	
-# e.g. {"patch_field":"ratings.0", "patch_value":"4"}
+    meal = Meal()
+    meal.name = request.form['name']
+    meal.cuisine = request.form['cuisine']
+    meal.difficulty = request.form['difficulty']
+    meal.total_cooking_time = request.form['total_cooking_time']
+    meal.ingredients = ingredients
+    meal.recipe = recipe
+    return meal.save().to_json()
+    
+# patch ratings for a meal
 @app.route('/meals/<meal_id>', methods=['PATCH'])
-def update_ratings(meal_id):
-	meals = mongo.db.meals
-	meals.update_one({'_id' : ObjectId(meal_id)}, {"$set" : {request.json['patch_field'] : request.json['patch_value']}}, upsert=False) 
-	updated_item = meals.find_one({'_id' : ObjectId(meal_id)})
-	return toJson(updated_item)
+def update_field(meal_id):
+    meal = update_ratings(meal_id, request.form['patch_field'])
+    if meal:
+        return Response(status=200)
 
+def update_ratings(meal_id, rating):
+    if rating == "zero":
+        return Meal.objects(id=meal_id).update(inc__ratings__zero=1)
+    elif rating == "one":
+        return Meal.objects(id=meal_id).update(inc__ratings__one=1)
+    elif rating == "two":
+        return Meal.objects(id=meal_id).update(inc__ratings__two=1)
+    elif rating == "three":
+        return Meal.objects(id=meal_id).update(inc__ratings__three=1)
+    elif rating == "four":
+        return Meal.objects(id=meal_id).update(inc__ratings__four=1)
+    else:
+        return Meal.objects(id=meal_id).update(inc__ratings__five=1)
 
-	
 @app.route('/meals/<meal_id>', methods=['DELETE'])
 def delete_meal(meal_id):	
-	meals = mongo.db.meals
-	result = meals.delete_one({'_id' : ObjectId(meal_id)})
-	if result.deleted_count == 1:
-		return Response(status=201)
-	else:
-		return abort(404)
+    deletedItem = Meal.objects(id = meal_id).delete()
+    if deletedItem:
+        return Response(status=204)
+    else:
+        abort(404)
 
 # user data section	
 @app.route('/users', methods=['GET'])
 def get_all_users():
-	users = mongo.db.users
-	output = []
-	for u in users.find():
-		output.append(u)
-	return toJson(output)
+	return User.objects.all().to_json()
 	
 @app.route('/users/<user_id>', methods=['GET'])
 def get_user(user_id):
-	users = mongo.db.users
-	user = users.find_one('_id', ObjectId('user_id'))
-	return toJson(user)
-	
-@app.route('/users', methods=['POST'])
-def add_user():
-	users = mongo.db.users
-	user = users.insert_one({
-		'email' : request.form['email'],
-		'name' : request.form['name'],
-		'password' : request.form['password'],
-		'verified' : 'not_verified',
-		'meal_plan_ids' : []})
-	new_user = users.find_one({
-		'email' : request.form['email']})
-	return toJson(new_user)
+	return User.objects(id = user_id).to_json()
 
 # only does update for verification and meal plan adding	
 @app.route('/users/<user_id>', methods=['PATCH'])
 def verify_user(user_id):
-	users = mongo.db.users
-	if request.json['patch'] == 'verified':
-		users.update_one({'_id' : ObjectId(user_id)}, {'verified' : 'verified'}, upsert=False)
-	else:	
-		meal_plan_ids = [y for y in (x.strip() for x in request.form['meal_plan_ids'].split('--')) if y]
-		users.update_one({'_id' : ObjectId(user_id)}, {'meal_plan_ids' : meal_plan_ids}, upsert=False)
-	updated_item = users.find_one({'_id' : ObjectId(user_id)})
-	return toJson(updated_item)
-
+    if request.form['patch'] == 'verified':
+        result = User.objects(id = user_id).update(set__verified=True)
+    else:	
+        meal_plans_id = [y for y in (x.strip() for x in request.form['meal_plan_ids'].split('--')) if y]
+        result = User.objects.update(set__meal_plans_id=meal_plans_id)
+    if result:
+        return Response(status=200)
+    else:
+        abort(404)
+    
 @app.route('/users/<user_id>', methods=['DELETE'])
 def delete_user(user_id):
-	users = mongo.db.users
-	result = users.delete_one({'_id' : ObjectId(user_id)})
-	if result.deleted_count == 1:
-		return Response(status=201)
+	deletedItem = User.objects(id=user_id).delete()
+	if deletedItem:
+		return Response(status=204)
 	else:
 		return abort(404)
 
 # meal plan data section	
 @app.route('/meal_plans', methods=['GET'])
 def get_meal_plans():
-	meal_plans = mongo.db.meal_plans
-	output = []
-	for m in meal_plans():
-		output.append(m)
-	return toJson(output)
-	
+	return Meal_Plan.objects.all().to_json()
+
 @app.route('/meal_plans/<meal_plan_id>', methods=['GET'])
 def get_meal_plan(meal_plan_id):
-	meal_plans = mongo.db.meal_plans
-	meal_plan = meal_plans.find_one({'_id' : ObjectId(meal_plan_id)})
-	return toJson(meal_plan)
+    return User.objects(id = user_id).to_json()
 
 @app.route('/meal_plans', methods=['POST'])
 def add_meal_plan():
-	meal_plans = mongo.db.meal_plans
-	meal_ids = [y for y in (x.strip() for x in request.form['meal_ids'].split('--')) if y]	
-	meal_plan = meal_plans.insert_one({
-		'duration' : request.json['duration'],
-		'start_date' : request.json['start_date'],
-		'meal_ids' : meal_ids})
-	new_meal_plan = meals.find_one({
-		'duration' : request.json['duration'],
-		'start_date' : request.json['start_date'],
-		'meal_ids' : meal_ids})
-	return toJson(new_meal_plan)
+    meal_ids = [y for y in (x.strip() for x in request.form['meal_ids'].split('--')) if y]
+    meal_plan = Meal_Plan()
+    meal_plan.name = request.form['name']
+    meal_plan.meal_id_list = meal_ids
+    meal_plan.duration = request.form['duration']
+    meal_plan.start_date = request.form['start_date']
+    return meal_plan.save().to_json()
 
 @app.route('/meal_plans/<meal_plan_id>', methods=['PATCH'])
 def modify_meal_plan(meal_plan_id):
-	meal_plans = mongo.db.meal_plans
-	meal_ids = [y for y in (x.strip() for x in request.form['meal_ids'].split('--')) if y]	
-	meal_plans.update_one({'_id' : ObjectId(meal_plan_id)}, {'meal_plan_ids}' : meal_ids})
-	updated_meal_plan = meal_plans.find_one({'_id' : ObjectId(meal_plan_id)})
-	return toJson(updated_meal_plan)
+    meal_ids = [y for y in (x.strip() for x in request.form['meal_ids'].split('--')) if y]	
+    result = Meal_Plan.objects(id = meal_plan_id).update(set__meal_plans_id=meal_ids)
+    if result:
+        return Response(status=200)
+    else:
+        abort(404)
 	
 if __name__ == '__main__':
 	app.secret_key = 'mysecret'
