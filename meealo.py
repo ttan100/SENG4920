@@ -23,31 +23,31 @@ def index():
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
-	# If you press the button to login
-	if request.method == 'POST':
-		users = User.objects.get(email=request.form['email'])
-		# Try and find your user in the database
-		login_user = users.find_one({'email' : request.form['email']})
+    # If you press the button to login
+    if request.method == 'POST':
+        # Try and find your user in the database
+        login_user = User._get_collection().find_one({'email' : request.form['email']})
         
-		# If found, login_user will not be None
-		if login_user:
+        # If found, login_user will not be None
+        if login_user:
 
-			# If passwords match, successfully login
-			if request.form['pass'] == login_user['pass']:			
-				session['name'] = login_user['name']
-				return redirect(url_for('home'))
+            # If passwords match, successfully login
+            if request.form['pass'] == login_user['password']:
+                session['name'] = login_user['name']
+                return redirect(url_for('index'))
 
-		# If no login found or password doesn't match, tell them
-		return 'Invalid username/password combination'
+            # If no login found or password doesn't match, tell them
+            return 'Invalid username/password combination'
 
-	# If it's a get request, render the login.html template
-	return render_template('login.html')
+    # If it's a get request, render the login.html template
+    return render_template('login.html')
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == 'POST':
         # Check if user exists
         existing_user = User._get_collection().find_one({'email' : request.form['email']})
+        
         # If not found, then add user into the database
         if existing_user is None:
             user = User()
