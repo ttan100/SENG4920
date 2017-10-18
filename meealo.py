@@ -19,7 +19,7 @@ def index():
 #	mongo.db.users.create_index("email", unique=True)
 	meals = Meal.objects.as_pymongo()
 	return render_template('index.html', meals=meals)
-    
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
@@ -42,7 +42,7 @@ def register():
     if request.method == 'POST':
         # Check if user exists
         existing_user = User._get_collection().find_one({'email' : request.form['email']})
-        
+
         # If not found, then add user into the database
         if existing_user is None:
             user = User()
