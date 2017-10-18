@@ -46,7 +46,11 @@
           <div class="col-sm-3 sticky-top sb">
             <form>
                 <h5>Current meal plan</h5>
-                
+                <div class="btn-group" id="duration" role="group" aria-label="Meal-Plan-Period">
+                  <button type="button" id="3" class="btn btn-secondary">3</button>
+                  <button type="button" id="5" class="btn btn-secondary">5</button>
+                  <button type="button" id="7" class="btn btn-secondary">7</button>
+                </div>
                 <div id="siteAds"></div>
             </form>
           </div>
@@ -54,6 +58,21 @@
   </div>
   <!--<footer id="pageFooter">Footer</footer>-->
 
+<script>
+$('#duration button').click(function() {
+  $(this).addClass('active').siblings().removeClass('active');
+  var e = document.getElementById("siteAds");
+  var duration = 0;
+  while (duration < $(this).text()) {
+    duration++;
+    e.innerHTML = "";
+    t = document.createElement("div");
+    t.innerHTML = "Day " + duration;
+    e.appendChild(t);
+  }
+
+});
+</script>
 <!-- Page scripts -->
 <script>
 	var plan = [];
@@ -68,12 +87,7 @@
             t.innerHTML = plan[m].name;
             e.appendChild(t);
         }
-        if (plan.length != 0) {
-            b = document.createElement("button");
-            t = document.createTextNode("Save Meal Plan");
-            b.appendChild(t);
-            e.appendChild(b);
-        }
+
     }
 </script>
 

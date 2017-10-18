@@ -27,7 +27,7 @@ def login():
         try:
             login_user = User.objects.get(email=request.form['email'])
             if login_user.password != request.form['pass']:
-                error = 'Incorrect password, try again.'            
+                error = 'Incorrect password, try again.'
             else:
                 session['session_user'] = login_user.name
                 flash('You were successfully logged in')
@@ -70,6 +70,7 @@ def logout():
 
 @app.route('/meals/<meal_id>', methods=['GET'])
 def get_meal(meal_id):
+    #meal = Meal.objects(id=meal_id).get().id
     return Meal.objects(id=meal_id).to_json()
     
 @app.route('/meals', methods=['POST'])
