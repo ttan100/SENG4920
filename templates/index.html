@@ -38,7 +38,7 @@
                   {% endfor %}
                   </ol>
                 </p>
-                <button type="button" onclick="addMealToPlan({{loop.index0}}, '{{meals[loop.index0].name}}')"> Add meal </button>
+                <button type="button" onclick="addMealToPlan('{{meal._id}}', '{{meal.name}}')"> Add meal </button>
               </details>
               <hr>
             {% endfor %}
@@ -76,19 +76,74 @@ $('#duration button').click(function() {
 <!-- Page scripts -->
 <script>
 	var plan = [];
-    function displayPlan(){
-        console.log(plan);
-        var e = document.getElementById("siteAds");
-        var t;
-        var b;
-        e.innerHTML = "";
-        for (m in plan) {
-            t = document.createElement("div");
-            t.innerHTML = plan[m].name;
-            e.appendChild(t);
+	function displayPlan(){
+		console.log(plan);
+		var e = document.getElementById("siteAds");
+		e.innerHTML = "";
+		for (m in plan) {
+			var t = document.createElement("div");
+			t.innerHTML = plan[m].name + "  ";
+			var b = document.createElement('input');
+			b.type = 'button';
+			b.value = "x";
+			b.addEventListener('click', function() {
+    			removeMealFromPlan(m);
+			}, false);
+			t.appendChild(b);
+			e.appendChild(t);
+		}
+		if (plan.length != 0) {
+			var b = document.createElement('input');
+			b.type = 'button';
+			b.value = "Save Meal Plan";
+			b.addEventListener('click', function() {
+    			saveMealPlan();
+			}, false);
+			e.appendChild(b);
+		}
+	}
+	
+	function addMealToPlan(mealindex, mealname) {	
+		var m = {"id": mealindex, "name": mealname}
+  		plan.push(m);
+  		displayPlan();
+  	}
+  	
+  	function removeMealFromPlan(index){
+  		plan.splice(index, 1);
+  		displayPlan();
+  	}
+  	
+  	function saveMealPlan(){
+  		params = new mealPlan();
+  	
+  		var form = document.createElement("form");
+    	form.setAttribute("method", "post");
+    	form.setAttribute("action", '/meal_plans');
+        for(var key in params) {
+			if(params.hasOwnProperty(key)) {
+				var hiddenField = document.createElement("input");
+				hiddenField.setAttribute("type", "hidden");
+				hiddenField.setAttribute("name", key);
+				hiddenField.setAttribute("value", params[key]);
+				form.appendChild(hiddenField);
+			}
+    	}
+    	document.body.appendChild(form);
+    	form.submit();	
+  	}
+  	
+  	function mealPlan(){
+  		this.name = "test";
+  		var mealidstr = "";
+  		for(i in plan) {
+        	mealidstr = mealidstr + plan[i].id + "--";
         }
-
-    }
+		this.meal_ids = mealidstr;
+		this.duration = plan.length;
+		this.start_date = Date.now();
+  	}
+  	
 </script>
 
 <!-- bootstrap required scripts -->

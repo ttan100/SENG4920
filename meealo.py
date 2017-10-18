@@ -5,6 +5,7 @@ from flask import Flask, jsonify, request, json, abort, session, redirect, rende
 from flask_pymongo import PyMongo
 from flask_restplus import Resource
 from bson import json_util
+from bson.objectid import ObjectId
 from models import *
 
 app = Flask(__name__)
@@ -158,7 +159,7 @@ def get_meal_plan(meal_plan_id):
 
 @app.route('/meal_plans', methods=['POST'])
 def add_meal_plan():
-    meal_ids = [y for y in (x.strip() for x in request.form['meal_ids'].split('--')) if y]
+    meal_ids = [ObjectId(y) for y in (x.strip() for x in request.form['meal_ids'].split('--')) if y]
     meal_plan = Meal_Plan()
     meal_plan.name = request.form['name']
     meal_plan.meal_id_list = meal_ids
