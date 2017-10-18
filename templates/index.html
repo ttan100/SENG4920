@@ -14,9 +14,9 @@
             {%for meal in meals%}
               <details id="something">
                 <summary>
-                  <div class="row">
+                  <div class="row align-items-center">
                       <div class="col-sm-2">
-                        <img src={{ meal.img_url }} height="100" width="100" alt="Meal image">
+                        <img src={{ meal.img_url }} class="rounded-circle" height="120" width="120" alt="Meal image">
                       </div>
                       <div class="col-sm-10">
                           <h2>{{meal.name}}</h2>
