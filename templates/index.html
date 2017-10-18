@@ -14,10 +14,10 @@
             {%for meal in meals%}
               <details id="something">
                 <summary>
-                  <img src={{ meal.img_url }} alt="Meal image">
+                  <img src={{ meal.img_url }} height="100" width="100" alt="Meal image">
                   <h2>{{meal.name}}</h2>
                   <p>Approximate cooking time: {{meal.total_cooking_time}}</p>
-                </summary>        
+                </summary>
                 <h5>Ingredients</h3>
                   <ul>
                     {% for ingredient in meal.ingredients %}
