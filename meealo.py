@@ -1,6 +1,7 @@
 # code for mongodb
 
-from flask import Flask, jsonify, request, json, abort, session, redirect, render_template, url_for, Response
+from flask import Flask, jsonify, request, json, abort, session, redirect, render_template, \
+     url_for, Response, flash
 from flask_pymongo import PyMongo
 from flask_restplus import Resource
 from bson import json_util
@@ -16,31 +17,25 @@ def toJson(data):
 @app.route('/')
 def index():
 #	mongo.db.users.create_index("email", unique=True)
-	if 'name' in session:
-		return 'hey there, ' + session['name']
 	meals = Meal.objects.as_pymongo()
 	return render_template('index.html', meals=meals)
-
-@app.route('/login', methods=['POST', 'GET'])
+    
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    # If you press the button to login
+    error = None
     if request.method == 'POST':
-        # Try and find your user in the database
-        login_user = User._get_collection().find_one({'email' : request.form['email']})
-        
-        # If found, login_user will not be None
-        if login_user:
-
-            # If passwords match, successfully login
-            if request.form['pass'] == login_user['password']:
-                session['name'] = login_user['name']
+        try:
+            login_user = User.objects.get(email=request.form['email'])
+            if login_user.password != request.form['pass']:
+                error = 'Incorrect password, try again.'            
+            else:
+                session['session_user'] = login_user.name
+                flash('You were successfully logged in')
                 return redirect(url_for('index'))
+        except:
+            flash('User does not exist')
 
-            # If no login found or password doesn't match, tell them
-            return 'Invalid username/password combination'
-
-    # If it's a get request, render the login.html template
-    return render_template('login.html')
+    return render_template('login.html', error=error)
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
@@ -66,7 +61,13 @@ def register():
     # If it's a get method, render register.html
     return render_template('register.html')
 
-    
+@app.route('/logout')
+def logout():
+    # remove the username from the session if it's there
+    session.pop('session_user', None)
+    flash('You have been logged out!')
+    return redirect(url_for('index'))
+
 @app.route('/meals/<meal_id>', methods=['GET'])
 def get_meal(meal_id):
     return Meal.objects(id=meal_id).to_json()
@@ -83,6 +84,7 @@ def add_meal():
     meal.total_cooking_time = request.form['total_cooking_time']
     meal.ingredients = ingredients
     meal.recipe = recipe
+    meal.img_url = request.form['img_url']
     return meal.save().to_json()
     
 # patch ratings for a meal
@@ -173,5 +175,5 @@ def modify_meal_plan(meal_plan_id):
         abort(404)
 	
 if __name__ == '__main__':
-	app.secret_key = 'mysecret'
+	app.secret_key = os.urandom(24)
 	app.run(debug=True)

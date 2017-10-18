@@ -1,39 +1,47 @@
 {% extends "layout.html" %}
+{% block extra_head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheet/index.css') }}" >
+{% endblock %}
 {% block body %}    
     <div class="container-fluid">
-    <div class="row">
-    <div class="col-sm-3"><div class="sticky-top"><div class="sb"><form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form></div></div></div>
-    <div class="col-sm-6">
-    {%for meal in meals%}
-      <details id="something">
-        <summary>
-          <h2>{{meal.name}}</h2>
-          <p>Approximate cooking time: {{meal.total_cooking_time}}</p>
-		</summary>        
-		<h5>Ingredients</h3>
-          <ul>
-            {% for ingredient in meal.ingredients %}
-              <li>{{ingredient}}</li>
+        <div class="row">
+            <div class="col-sm-3 sticky-top sb">
+                <form class="form-inline my-2 my-lg-0">
+                  <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form></div>
+            <div class="col-sm-6">
+            {%for meal in meals%}
+              <details id="something">
+                <summary>
+                  <img src={{ meal.img_url }} alt="Meal image">
+                  <h2>{{meal.name}}</h2>
+                  <p>Approximate cooking time: {{meal.total_cooking_time}}</p>
+                </summary>        
+                <h5>Ingredients</h3>
+                  <ul>
+                    {% for ingredient in meal.ingredients %}
+                      <li>{{ingredient}}</li>
+                    {% endfor %}
+                  </ul> 
+                <h5>Instructions:</h3>
+                <p> 
+                  <ol>
+                  {% for step in meal.recipe %}
+                    <li>{{step}}</li>
+                  {% endfor %}
+                  </ol>
+                </p>
+                <button type="button" onclick="addMealToPlan({{loop.index0}}, '{{meals[loop.index0].name}}')"> Add meal </button>
+              </details>
+              <hr>
             {% endfor %}
-          </ul> 
-        <h5>Instructions:</h3>
-        <p> 
-          <ol>
-          {% for step in meal.recipe %}
-            <li>{{step}}</li>
-          {% endfor %}
-          </ol>
-        </p>
-        <button type="button" onclick="addMealToPlan({{loop.index0}}, '{{meals[loop.index0].name}}')"> Add meal </button>
-      </details>
-      <hr>
-    {% endfor %}
-    </div>
-  <div class="col-sm-3" ><div class="sticky-top"><div class="sb"><h5>Current meal plan</h5><div id="siteAds"></div></div></div></div>
-  </div>
+            </div>
+          <div class="col-sm-3 sticky-top sb">
+            <h5>Current meal plan</h5>
+            <div id="siteAds"></div>
+          </div>
+      </div>
   </div>
   <!--<footer id="pageFooter">Footer</footer>-->
 

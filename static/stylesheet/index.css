@@ -1,0 +1,16 @@
+[class*="col-"] {
+  padding-bottom: 1rem;
+  border: 1px solid rgba(86,61,124,.2);
+}
+.col-sm-3 {
+  background-color: rgb(249,249,249);
+}
+.col-sm-6 {
+  padding-top: 4rem;
+}
+.sb {
+  padding-top: 4.5rem;
+}
+.meal_img {
+  
+}

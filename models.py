@@ -40,6 +40,7 @@ class Meal(Document):
     ingredients = ListField(StringField())
     recipe = ListField(StringField())
     ratings = EmbeddedDocumentField(Rating, default=Rating)
+    img_url = URLField()
 
 class Meal_Plan(Document):
     viewable = BooleanField(default=False)
