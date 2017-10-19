@@ -1,19 +1,22 @@
 {% extends "layout.html" %}
+{% block extra_head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheet/register.css') }}" >
+{% endblock %}
 {% block body %} 
-<div class="container">
-    <div class="row">
+<div class="container-fluid">
+    <div class="row justify-content-md-center register-form">
         <div class="col-md-4 col-md-offset-4">
             <form method=POST action="{{ url_for('register') }}">
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="text" class="form-control" name="email" placeholder="email">
+                    <label for="email" class="text-white">Email</label>
+                    <input type="text" class="form-control" name="email" placeholder="Email">
                 </div>
                 <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" class="form-control" name="name" placeholder="name">
+                    <label for="name" class="text-white">Name</label>
+                    <input type="text" class="form-control" name="name" placeholder="Name">
                 </div>
                 <div class="form-group">
-                    <label for="password">Password</label>
+                    <label for="password" class="text-white">Password</label>
                     <input type="password" class="form-control" name="pass" placeholder="Password">
                 </div>
 

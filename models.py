@@ -10,8 +10,10 @@ connect(
     os.getenv('DBNAME'),
     username = os.getenv('DB_USERNAME'),
     password = os.getenv('DB_PASSWORD'),
-    host = os.getenv('MONGO_URL'),
-    port = int(os.getenv('PORT'))
+    host = os.getenv('MONGO_URL'),      
+    #host = 'ds139904.mlab.com',
+    port = int(os.getenv('PORT'))       
+    #port = 39904
 )
 
 DIFFICULTY = ('Easy', 'Medium', 'Hard', 'Expert')

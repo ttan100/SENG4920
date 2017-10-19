@@ -8,18 +8,18 @@
             <div class="col-md-4">
                 <form method=POST action="{{ url_for('login') }}">
                     <div class="form-group">
-                        <label for="inputEmail">Email</label>
+                        <label for="inputEmail" class="text-white">Email</label>
                         <input type="text" class="form-control" name="email" placeholder="Email" required autofocus>
                         <small id="emailHelp" class="form-text text-muted">We'll never share your details with anyone else.</small>
                     </div>
                     <div class="form-group">
-                        <label for="inputPassword">Password</label>
+                        <label for="inputPassword" class="text-white">Password</label>
                         <input type="password" class="form-control" name="pass" placeholder="Password" required>
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">Log In</button>
                 </form>
                 <br>
-                <div>
+                <div class="text-white">
                     Don't have an account? <a href="{{ url_for('register') }}">Sign up here</a>.
                 </div>
             </div>
