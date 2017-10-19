@@ -53,8 +53,8 @@ def register():
             user.password=request.form['pass']
             user.save()
             
-            # Automatically login, fo now no confirmation email
-            session['session_user'] = login_user.name
+            # Automatically login, for now no confirmation email
+            #session['session_user'] = login_user.name
             return redirect(url_for('index'))
 
         # If there already is an existing user, tell them!
@@ -70,6 +70,12 @@ def logout():
     session.pop('session_userid', None)
     flash('You have been logged out!')
     return redirect(url_for('index'))
+
+@app.route('/my_meal_plan', methods=['GET'])
+def my_meal_plan():
+    # my meal plan only appears if you are logged in, checked in index.html
+    return render_template('my_meal_plan.html')
+
 
 @app.route('/meals/<meal_id>', methods=['GET'])
 def get_meal(meal_id):

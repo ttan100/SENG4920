@@ -23,8 +23,13 @@
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            	<a class="nav-link" href="#">Add meal</a>
+            <a class="nav-link" href="#">Add meal</a>
           </li>
+          {% if session.session_user %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('my_meal_plan') }}">My meals</a>
+            </li>
+          {% endif %}
         </ul>
         <ul class="navbar-nav navbar-right">
           {% if not session.session_user %}
