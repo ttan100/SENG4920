@@ -2,10 +2,6 @@ body {
   background-image: url("../images/background.jpeg");
 }
 
-.text-white{
-  color: #000000;
-}
-
 .login-form {
   padding-top: 10rem;
 }

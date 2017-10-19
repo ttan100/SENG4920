@@ -52,8 +52,8 @@ def register():
             user.password=request.form['pass']
             user.save()
             
-            # Automatically login
-            session['name'] = request.form['name']
+            # Automatically login, fo now no confirmation email
+            session['session_user'] = login_user.name
             return redirect(url_for('index'))
 
         # If there already is an existing user, tell them!
