@@ -31,7 +31,7 @@ def login():
                 error = 'Incorrect password, try again.'
             else:
                 session['session_user'] = login_user.name
-        session['session_userid'] = str(login_user.id)
+                session['session_userid'] = str(login_user.id)
                 flash('You were successfully logged in')
                 return redirect(url_for('index'))
         except:
