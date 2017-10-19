@@ -16,7 +16,7 @@
                 <summary>
                   <div class="row align-items-center">
                       <div class="col-sm-2">
-                        <img src={{ meal.img_url }} class="rounded-circle" height="120" width="120" alt="Meal image">
+                        <img src={{ meal.img_url }} class="img-fluid img-thumbnail" alt="Meal image">
                       </div>
                       <div class="col-sm-10">
                           <h2>{{meal.name}}</h2>
@@ -43,14 +43,16 @@
               <hr>
             {% endfor %}
             </div>
-          <div class="col-sm-3-f sb">
+          <div class="col-sm-3 sb">
             <form>
-                <h5>Current meal plan</h5>
-                <div class="btn-group" id="duration" role="group" aria-label="Meal-Plan-Period">
-                  <button type="button" id="3" class="btn btn-secondary">3</button>
-                  <button type="button" id="5" class="btn btn-secondary">5</button>
-                  <button type="button" id="7" class="btn btn-secondary">7</button>
-                </div>
+                <h3>Current meal plan</h3>
+				<hr>
+				<h4>How many days do you want to set your meal plan for?</h4>
+				<div class="row">
+					<button type="button" onclick="setDisplayPlan(3)" class="btn btn-outline-secondary btn-lg">3</button>
+					<button type="button" onclick="setDisplayPlan(5)" class="btn btn-outline-secondary btn-lg">5</button>
+					<button type="button" onclick="setDisplayPlan(7)" class="btn btn-outline-secondary btn-lg">7</button>
+				</div>
                 <div id="siteAds"></div>
             </form>
           </div>
@@ -58,26 +60,30 @@
   </div>
   <!--<footer id="pageFooter">Footer</footer>-->
 
-<script>
-$('#duration button').click(function() {
-  $(this).addClass('active').siblings().removeClass('active');
-  var e = document.getElementById("siteAds");
-  var duration = 0;
-  while (duration < $(this).text()) {
-    duration++;
-    e.innerHTML = "";
-    t = document.createElement("div");
-    t.innerHTML = "Day " + duration;
-    e.appendChild(t);
-  }
-
-});
-</script>
-
-
 <!-- Page scripts -->
 <script>
 	var plan = [];
+	
+	function setDisplayPlan(duration) {
+			var num = 0;
+			<!-- Resets the siteads div -->
+			document.getElementById("siteAds").innerHTML = "";
+			while (num < duration) {
+				num++;
+				var detailsNode = document.createElement("details")
+				var summaryNode = document.createElement("summary")
+				var titleNode = document.createElement("h3")
+				var textNode = document.createTextNode("Day " + num);
+				titleNode.appendChild(textNode);
+				summaryNode.appendChild(titleNode);
+				detailsNode.appendChild(summaryNode);
+				var mealListNode = document.createElement("div")
+				mealListNode.className = "row"
+				document.getElementById("siteAds").appendChild(detailsNode);
+				document.getElementById("siteAds").appendChild(document.createElement("hr"))
+			}
+	}
+	
 	function displayPlan(){
 		console.log(plan);
 		var e = document.getElementById("siteAds");
