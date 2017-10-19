@@ -12,14 +12,14 @@ app = Flask(__name__)
 
 # dumps mongo data object as json
 def toJson(data):
-	return json.dumps(data, default=json_util.default)
+    return json.dumps(data, default=json_util.default)
 
 # test that the index uri works
 @app.route('/')
 def index():
-#	mongo.db.users.create_index("email", unique=True)
-	meals = Meal.objects.as_pymongo()
-	return render_template('index.html', meals=meals)
+#    mongo.db.users.create_index("email", unique=True)
+    meals = Meal.objects.as_pymongo()
+    return render_template('index.html', meals=meals)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -31,7 +31,7 @@ def login():
                 error = 'Incorrect password, try again.'
             else:
                 session['session_user'] = login_user.name
-		session['session_userid'] = str(login_user.id)
+        session['session_userid'] = str(login_user.id)
                 flash('You were successfully logged in')
                 return redirect(url_for('index'))
         except:
@@ -113,28 +113,28 @@ def update_ratings(meal_id, rating):
         return Meal.objects(id=meal_id).update(inc__ratings__five=1)
 
 @app.route('/meals/<meal_id>', methods=['DELETE'])
-def delete_meal(meal_id):	
+def delete_meal(meal_id):    
     deletedItem = Meal.objects(id = meal_id).delete()
     if deletedItem:
         return Response(status=204)
     else:
         abort(404)
 
-# user data section	
+# user data section    
 @app.route('/users', methods=['GET'])
 def get_all_users():
-	return User.objects.all().to_json()
-	
+    return User.objects.all().to_json()
+    
 @app.route('/users/<user_id>', methods=['GET'])
 def get_user(user_id):
-	return User.objects(id = user_id).to_json()
+    return User.objects(id = user_id).to_json()
 
-# only does update for verification and meal plan adding	
+# only does update for verification and meal plan adding    
 @app.route('/users/<user_id>', methods=['PATCH'])
 def verify_user(user_id):
     if request.form['patch'] == 'verified':
         result = User.objects(id = user_id).update(set__verified=True)
-    else:	
+    else:    
         meal_plans_id = [y for y in (x.strip() for x in request.form['meal_plan_ids'].split('--')) if y]
         result = User.objects.update(set__meal_plans_id=meal_plans_id)
     if result:
@@ -144,16 +144,16 @@ def verify_user(user_id):
     
 @app.route('/users/<user_id>', methods=['DELETE'])
 def delete_user(user_id):
-	deletedItem = User.objects(id=user_id).delete()
-	if deletedItem:
-		return Response(status=204)
-	else:
-		return abort(404)
+    deletedItem = User.objects(id=user_id).delete()
+    if deletedItem:
+        return Response(status=204)
+    else:
+        return abort(404)
 
-# meal plan data section	
+# meal plan data section    
 @app.route('/meal_plans', methods=['GET'])
 def get_meal_plans():
-	return Meal_Plan.objects.all().to_json()
+    return Meal_Plan.objects.all().to_json()
 
 @app.route('/meal_plans/<meal_plan_id>', methods=['GET'])
 def get_meal_plan(meal_plan_id):
@@ -176,13 +176,13 @@ def add_meal_plan():
 
 @app.route('/meal_plans/<meal_plan_id>', methods=['PATCH'])
 def modify_meal_plan(meal_plan_id):
-    meal_ids = [y for y in (x.strip() for x in request.form['meal_ids'].split('--')) if y]	
+    meal_ids = [y for y in (x.strip() for x in request.form['meal_ids'].split('--')) if y]    
     result = Meal_Plan.objects(id = meal_plan_id).update(set__meal_plans_id=meal_ids)
     if result:
         return Response(status=200)
     else:
         abort(404)
-	
+    
 if __name__ == '__main__':
-	app.secret_key = os.urandom(24)
-	app.run(debug=True)
+    app.secret_key = os.urandom(24)
+    app.run(debug=True)
