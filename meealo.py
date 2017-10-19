@@ -31,6 +31,7 @@ def login():
                 error = 'Incorrect password, try again.'
             else:
                 session['session_user'] = login_user.name
+		session['session_userid'] = str(login_user.id)
                 flash('You were successfully logged in')
                 return redirect(url_for('index'))
         except:
@@ -66,6 +67,7 @@ def register():
 def logout():
     # remove the username from the session if it's there
     session.pop('session_user', None)
+    session.pop('session_userid', None)
     flash('You have been logged out!')
     return redirect(url_for('index'))
 
@@ -165,7 +167,12 @@ def add_meal_plan():
     meal_plan.meal_id_list = meal_ids
     meal_plan.duration = request.form['duration']
     meal_plan.start_date = request.form['start_date']
-    return meal_plan.save().to_json()
+    meal_plan.save()
+    user = User.objects(id = ObjectId(session['session_userid'])).get()
+    user.meal_plans_id.append(meal_plan.id)
+    user.update(set__meal_plans_id=user.meal_plans_id)
+    return redirect(url_for('index'))
+
 
 @app.route('/meal_plans/<meal_plan_id>', methods=['PATCH'])
 def modify_meal_plan(meal_plan_id):
