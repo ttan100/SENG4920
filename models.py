@@ -1,7 +1,7 @@
 from mongoengine import *
-from bson import ObjectId
 from dotenv import load_dotenv, find_dotenv
 import os
+import datetime
 
 load_dotenv(find_dotenv())
 
@@ -10,10 +10,8 @@ connect(
     os.getenv('DBNAME'),
     username = os.getenv('DB_USERNAME'),
     password = os.getenv('DB_PASSWORD'),
-    host = os.getenv('MONGO_URL'),      
-    #host = 'ds139904.mlab.com',
-    port = int(os.getenv('PORT'))       
-    #port = 39904
+    host = os.getenv('MONGO_URL'),
+    port = int(os.getenv('PORT'))
 )
 
 DIFFICULTY = ('Easy', 'Medium', 'Hard', 'Expert')
@@ -37,26 +35,33 @@ class Rating(EmbeddedDocument):
         
 class Meal(Document):
     name = StringField(required=True)
-    cuisine = StringField()
     difficulty = StringField(choices = DIFFICULTY)
     total_cooking_time = StringField()
     ingredients = ListField(StringField())
     recipe = ListField(StringField())
     ratings = EmbeddedDocumentField(Rating, default=Rating)
+    tags = ListField(StringField())
     img_url = URLField()
+    def clean(self):
+    	self.tags = [self.name]
 
 class Meal_Plan(Document):
     viewable = BooleanField(default=False)
     name = StringField()
     meal_id_list = ListField(ReferenceField(Meal, reverse_delete_rule=PULL))
+    ratings = EmbeddedDocumentField(Rating, default=Rating)
     duration = IntField()
-    start_date = DateTimeField()
-    def clean(self):
-        self.start_date = datetime.now()
+    tags = ListField(StringField())
+
 
 class User(Document):
     email = EmailField(required=True, unique=True)
     name = StringField(required=True, max_length=50)
     password = StringField(required=True, max_length=200)
     verified = BooleanField(default=False)
-    meal_plans_id = ListField(ReferenceField(Meal_Plan, reverse_delete_rule=PULL))
+    meal_plan_ids = ListField(ReferenceField(Meal_Plan, reverse_delete_rule=PULL))
+    current_meal_plan = ReferenceField(Meal_Plan, reverse_delete_rule=PULL)
+    meal_plan_start_date = DateTimeField()
+    def clean(self):
+        self.current_meal_plan = None
+        self.start_date = datetime.datetime.now()
