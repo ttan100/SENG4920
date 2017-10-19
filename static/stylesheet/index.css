@@ -2,7 +2,16 @@
   background-color: rgb(249,249,249);
   padding-bottom: 1rem;
   border: 1px solid rgba(86,61,124,.2);
+  /*position : fixed;*/
 }
+
+.col-sm-3-f {
+  background-color: rgb(249,249,249);
+  padding-bottom: 1rem;
+  border: 1px solid rgba(86,61,124,.2);
+  position : fixed;
+}
+
 .col-sm-6 {
   padding-top: 4rem;
   padding-bottom: 1rem;
