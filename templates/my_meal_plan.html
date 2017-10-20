@@ -64,13 +64,18 @@
                     <h4 class="card-title">
                       {{ m.name }}
                     </h4>
-                    <p class="card-text">
-                      {{ m.name }}
-                    </p>
                   </div>
-                  <image class="card-img img-thumbnail" src="{{ m.img_url }}" alt="picture of food?">
-                  <image class="card-img img-thumbnail" src="{{ m.img_url }}" alt="picture of food?">
-                  <image class="card-img img-thumbnail" src="{{ m.img_url }}" alt="picture of food?">
+                  <div class="row">
+                    <div class="col">
+                      <image class="card-img-bottom img-rounded" src="{{ m.img_url }}" alt="{{ m.name }}">
+                    </div>
+                    <div class="col">
+                      <image class="card-img-bottom img-rounded" src="{{ m.img_url }}" alt="{{ m.name }}">
+                    </div>
+                    <div class="col">
+                      <image class="card-img-bottom img-rounded" src="{{ m.img_url }}" alt="{{ m.name }}">
+                    </div>
+                  </div>
                 </div>
                 {% endfor %}
               </div>
