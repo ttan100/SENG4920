@@ -74,8 +74,9 @@ def logout():
 @app.route('/my_meal_plan', methods=['GET'])
 def my_meal_plan():
     # my meal plan only appears if you are logged in, checked in index.html
-    return render_template('my_meal_plan.html')
-
+    user = User.objects(id=ObjectId(session['session_userid'])).get();
+    return render_template('my_meal_plan.html', user=user)
+    #return render_template('my_meal_plan.html')
 
 @app.route('/meals/<meal_id>', methods=['GET'])
 def get_meal(meal_id):
