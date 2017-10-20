@@ -176,8 +176,8 @@ def add_meal_plan():
     meal_plan.start_date = request.form['start_date']
     meal_plan.save()
     user = User.objects(id = ObjectId(session['session_userid'])).get()
-    user.meal_plans_id.append(meal_plan.id)
-    user.update(set__meal_plans_id=user.meal_plans_id)
+    user.meal_plan_ids.append(meal_plan.id)
+    user.update(set__meal_plan_ids=user.meal_plan_ids)
     return redirect(url_for('index'))
 
 
