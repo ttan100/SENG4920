@@ -58,7 +58,7 @@
           <div class="container">
             <div class="row">
               {% for m in mp.meal_id_list %}
-              <div class="col card" style="width: 20rem;">
+              <div class="col card">
                 <div class="card-body">
                   <h4 class="card-title">
                     {{ m.name }}
@@ -67,10 +67,13 @@
                     {{ m.name }}
                   </p>
                 </div>
-                <image class="card-img-bottom" src="{{ m.img_url }}" alt="picture of food?">
+                <image class="card-img img-thumbnail" src="{{ m.img_url }}" alt="picture of food?">
+                <image class="card-img img-thumbnail" src="{{ m.img_url }}" alt="picture of food?">
+                <image class="card-img img-thumbnail" src="{{ m.img_url }}" alt="picture of food?">
               </div>
               {% endfor %}
             </div>
+            <button> Start meal plan </button>
           </div>
         {% endfor %}
       </div>
