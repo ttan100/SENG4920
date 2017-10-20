@@ -11,45 +11,70 @@
       </div>
     </div>
     <div class="row justify-content-md-center my-meal-plan-form"> 
+      {% if current_meal_plan %}
       <div id="current-meal-plan" class="col-sm-8">
         <div class="container">
           <div class="row">
+            {% for m in current_meal_plan.meal_id_list %}
             <div class="col card" style="width: 20rem;">
               <div class="card-body">
                 <h4 class="card-title">
-                  Day 1
+                  {{ m.name }}
                 </h4>
                 <p class="card-text">
-                  pictures?
+                  {{ m.name }}
                 </p>
               </div>
-              <image class="card-img-bottom" src="" alt="picture of food?">
-               
+              <image class="card-img-bottom" src="{{ m.img_url }}" alt="picture of food?">
             </div>
+            {% endfor %}
             <div class="col card" style="width: 20rem;">
               <div class="card-body">
                 <h4 class="card-title">
                   Day 2
                 </h4>
                 <p class="card-text">
-                  {{ user.name }}
+                  {{ user.meal_plan_ids }}
+                  {{ meal_plans.name }}
+
                 </p>
               </div>              
             </div>
           </div>
         </div>
       </div>
-      <div id="saved-meal-plan" class="container-fluid">
-        <h2> Saved Meal Plans </h2>
-          <div> 
-            test, this is a saved meal plan 
-          </div>
-          <div> 
-            test, this is a saved meal plan 
-          </div>
-      </div>  
+    {% else %}
+    <p> no current meal plan </p>
+    {% endif %}
     </div>
-  </div>
+    <div class="row justify-content-md-center my-meal-plan-form">
+      <div>
+        <h1> Saved Meal Plan </h1>
+      </div>
+    </div>
+    <div class="row justify-content-md-center my-meal-plan-form"> 
+      <div id="saved-meal-plans" class="col-sm-8">
+        {% for mp in saved_meal_plans %}
+          <div class="container">
+            <div class="row">
+              {% for m in mp.meal_id_list %}
+              <div class="col card" style="width: 20rem;">
+                <div class="card-body">
+                  <h4 class="card-title">
+                    {{ m.name }}
+                  </h4>
+                  <p class="card-text">
+                    {{ m.name }}
+                  </p>
+                </div>
+                <image class="card-img-bottom" src="{{ m.img_url }}" alt="picture of food?">
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
 
   <!--<footer id="pageFooter">Footer</footer>-->
 
