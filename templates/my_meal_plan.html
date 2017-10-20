@@ -79,8 +79,12 @@
                 </div>
                 {% endfor %}
               </div>
-                <button> Start meal plan </button>
-              </div>
+              <form method=POST action="{{ url_for('my_meal_plan') }}">
+                <div class="form-group">
+                  <input type="hidden" class="form-control" name="button" value="{{mp}}">       
+                  <button type="submit" class="btn btn-primary btn-block">Start Meal Plan</button>
+                </div>
+              </form>
           {% endfor %}
         </div>
       {% else %}

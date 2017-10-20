@@ -74,36 +74,42 @@ def logout():
     flash('You have been logged out!')
     return redirect(url_for('index'))
 
-@app.route('/my_meal_plan', methods=['GET'])
+@app.route('/my_meal_plan', methods=['GET', 'POST'])
 def my_meal_plan():
-    # my meal plan only appears if you are logged in, checked in index.html
-    try:
-        # Firstly get the user
-        user = User.objects(id=ObjectId(session['session_userid'])).get();
-
-        # variables to check
-        saved_meal_plans = []
-        current_meal_plan = None
-
-        # Find if there's any saved/current meal plans for this user    
+    
+    if request.method == 'POST':
+        print('hi')
+        print(request.form['button'])
+        return redirect(url_for('my_meal_plan'))    
+    else:
         try:
-            for mp in user.meal_plan_ids:     
-                saved_meal_plans.append(Meal_Plan.objects(id=mp.id).get())
+            # my meal plan only appears if you are logged in, checked in index.html
+            # Firstly get the user
+            user = User.objects(id=ObjectId(session['session_userid'])).get();
+
+            # variables to check
+            saved_meal_plans = []
+            current_meal_plan = None
+
+            # Find if there's any saved/current meal plans for this user    
+            try:
+                for mp in user.meal_plan_ids:     
+                    saved_meal_plans.append(Meal_Plan.objects(id=mp.id).get())
+            except:
+                flash('No saved meal plan')
+            
+            try:
+                current_meal_plan = Meal_Plan.objects(id=user.current_meal_plan).get()
+            except:
+                flash('No current meal plan')
+            
+            # Go to my meal plan page
+            return render_template('my_meal_plan.html', user=user, 
+                                    saved_meal_plans=saved_meal_plans, 
+                                    current_meal_plan=current_meal_plan)
         except:
-            flash('No saved meal plan')
-        
-        try:
-            current_meal_plan = Meal_Plan.objects(id=user.current_meal_plan).get()
-        except:
-            flash('No current meal plan')
-        
-        # Go to my meal plan page
-        return render_template('my_meal_plan.html', user=user, 
-                                saved_meal_plans=saved_meal_plans, 
-                                current_meal_plan=current_meal_plan)
-    except:
-        flash('Error: no sessionid, taking you back to homepage!')
-        return redirect(url_for('index'))
+            flash('Error: no sessionid but still on this page')
+            return render_template('index.html')
         
 @app.route('/meals/<meal_id>', methods=['GET'])
 def get_meal(meal_id):
