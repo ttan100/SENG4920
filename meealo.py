@@ -96,8 +96,7 @@ def my_meal_plan():
 
 @app.route('/meals/<meal_id>', methods=['GET'])
 def get_meal(meal_id):
-    #meal = Meal.objects(id=meal_id).get().id
-    return Meal.objects(id=meal_id).to_json()
+    return render_template('meal.html', meal=Meal.objects(id=meal_id).get())
     
 @app.route('/meals', methods=['POST'])
 def add_meal():
