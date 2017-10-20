@@ -12,8 +12,6 @@
                 </form></div>
             <div class="col-sm-6">
             {%for meal in meals%}
-              <details id="something">
-                <summary>
                   <div class="row align-items-center">
                       <div class="col-sm-2">
                         <img src={{ meal.img_url }} draggable="true" onmousedown="get_pos(event)" ondragstart="drag(event)" class="img-fluid img-thumbnail" alt="Meal image">
@@ -21,25 +19,9 @@
                       <div class="col-sm-10">
                           <h2>{{meal.name}}</h2>
                           <p>Approximate cooking time: {{meal.total_cooking_time}}</p>
+                          <small> <a class="nav-link" href="/meals/{{meal._id}}">View details</a></small>
                       </div>
                   </div>
-                </summary>
-                <h5>Ingredients</h3>
-                  <ul>
-                    {% for ingredient in meal.ingredients %}
-                      <li>{{ingredient}}</li>
-                    {% endfor %}
-                  </ul> 
-                <h5>Instructions:</h3>
-                <p> 
-                  <ol>
-                  {% for step in meal.recipe %}
-                    <li>{{step}}</li>
-                  {% endfor %}
-                  </ol>
-                </p>
-                <button type="button" onclick="addMealToPlan('{{meal._id}}', '{{meal.name}}')"> Add meal </button>
-              </details>
               <hr>
             {% endfor %}
             </div>

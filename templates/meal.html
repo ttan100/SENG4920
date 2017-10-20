@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block extra_head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheet/my_meal_plan.css') }}" >
+{% endblock %}
+{% block body %}  
+
+  <div class="container-fluid">
+    <div class="row justify-content-md-center my-meal-plan-form">
+      <div>
+        <h1> {{ meal.name }} </h1>
+      </div>
+    </div>
+    <div class="row align-items-center">
+		<h5>Ingredients</h3>
+		<ul>
+			{% for ingredient in meal.ingredients %}
+				<li>{{ingredient}}</li>
+			{% endfor %}
+		</ul> 
+	</div>
+    <div class="row align-items-center">
+		<h5>Instructions:</h3>
+		<p> 
+			<ol>
+				{% for step in meal.recipe %}
+					<li>{{step}}</li>
+				{% endfor %}
+			</ol>
+		</p>
+	</div>
+  </div>
+
+  <!--<footer id="pageFooter">Footer</footer>-->
+
+<!-- bootstrap required scripts -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+{% endblock %}

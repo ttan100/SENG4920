@@ -53,8 +53,8 @@ def register():
             user.password=request.form['pass']
             user.save()
             
-            # Automatically login, fo now no confirmation email
-            session['session_user'] = login_user.name
+            # Automatically login, for now no confirmation email
+            #session['session_user'] = login_user.name
             return redirect(url_for('index'))
 
         # If there already is an existing user, tell them!
@@ -71,10 +71,16 @@ def logout():
     flash('You have been logged out!')
     return redirect(url_for('index'))
 
+@app.route('/my_meal_plan', methods=['GET'])
+def my_meal_plan():
+    # my meal plan only appears if you are logged in, checked in index.html
+    user = User.objects(id=ObjectId(session['session_userid'])).get();
+    return render_template('my_meal_plan.html', user=user)
+    #return render_template('my_meal_plan.html')
+
 @app.route('/meals/<meal_id>', methods=['GET'])
 def get_meal(meal_id):
-    #meal = Meal.objects(id=meal_id).get().id
-    return Meal.objects(id=meal_id).to_json()
+    return render_template('meal.html', meal=Meal.objects(id=meal_id).get())
     
 @app.route('/meals', methods=['POST'])
 def add_meal():
@@ -169,8 +175,8 @@ def add_meal_plan():
     meal_plan.start_date = request.form['start_date']
     meal_plan.save()
     user = User.objects(id = ObjectId(session['session_userid'])).get()
-    user.meal_plans_id.append(meal_plan.id)
-    user.update(set__meal_plans_id=user.meal_plans_id)
+    user.meal_plan_ids.append(meal_plan.id)
+    user.update(set__meal_plan_ids=user.meal_plan_ids)
     return redirect(url_for('index'))
 
 
