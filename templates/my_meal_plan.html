@@ -10,9 +10,9 @@
         <h1> Current Meal Plan </h1>
       </div>
     </div>
-    <div class="row justify-content-md-center my-meal-plan-form"> 
+    <div class="row justify-content-md-center"> 
       {% if current_meal_plan %}
-      <div id="current-meal-plan" class="col-sm-8">
+      <div id="current-meal-plan">
         <div class="container">
           <div class="row">
             {% for m in current_meal_plan.meal_id_list %}
@@ -44,41 +44,44 @@
         </div>
       </div>
     {% else %}
-    <p> no current meal plan </p>
+    <p> There is currently no active meal plan. Please choose one from below.</p>
     {% endif %}
     </div>
     <div class="row justify-content-md-center my-meal-plan-form">
       <div>
-        <h1> Saved Meal Plan </h1>
+        <h1> Saved Meal Plans </h1>
       </div>
     </div>
-    <div class="row justify-content-md-center my-meal-plan-form"> 
-      <div id="saved-meal-plans" class="col-sm-8">
-        {% for mp in saved_meal_plans %}
-          <div class="container">
-            <div class="row">
-              {% for m in mp.meal_id_list %}
-              <div class="col card">
-                <div class="card-body">
-                  <h4 class="card-title">
-                    {{ m.name }}
-                  </h4>
-                  <p class="card-text">
-                    {{ m.name }}
-                  </p>
+    <div class="row justify-content-md-center"> 
+      {% if saved_meal_plans %}
+        <div id="saved-meal-plans" class="col-sm-8">
+          {% for mp in saved_meal_plans %}
+            <div class="container">
+              <div class="row">
+                {% for m in mp.meal_id_list %}
+                <div class="col card">
+                  <div class="card-body">
+                    <h4 class="card-title">
+                      {{ m.name }}
+                    </h4>
+                    <p class="card-text">
+                      {{ m.name }}
+                    </p>
+                  </div>
+                  <image class="card-img img-thumbnail" src="{{ m.img_url }}" alt="picture of food?">
+                  <image class="card-img img-thumbnail" src="{{ m.img_url }}" alt="picture of food?">
+                  <image class="card-img img-thumbnail" src="{{ m.img_url }}" alt="picture of food?">
                 </div>
-                <image class="card-img img-thumbnail" src="{{ m.img_url }}" alt="picture of food?">
-                <image class="card-img img-thumbnail" src="{{ m.img_url }}" alt="picture of food?">
-                <image class="card-img img-thumbnail" src="{{ m.img_url }}" alt="picture of food?">
+                {% endfor %}
               </div>
-              {% endfor %}
-            </div>
-            <button> Start meal plan </button>
-          </div>
-        {% endfor %}
-      </div>
+                <button> Start meal plan </button>
+              </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p> There is currently no saved meal plans. Please go to add plan and create one now! </p>
+      {% endif %}
     </div>
-
   <!--<footer id="pageFooter">Footer</footer>-->
 
 <!-- bootstrap required scripts -->

@@ -79,20 +79,22 @@ def my_meal_plan():
     user = User.objects(id=ObjectId(session['session_userid'])).get();
     
     saved_meal_plans = []
-    for mp in user.meal_plan_ids:     
-        saved_meal_plans.append(Meal_Plan.objects(id=mp.id).get())
-
+    # Try and see if there's any saved meal plans for this user    
+    try:
+        for mp in user.meal_plan_ids:     
+            saved_meal_plans.append(Meal_Plan.objects(id=mp.id).get())
+    except:
+        flash('No saved meal plan')
+        return render_template('my_meal_plan.html', user=user)
+    
     # Try and see if there's a current meal plan
     try:
         current_meal_plan = Meal_Plan.objects(id=user.current_meal_plan).get()
-        print(current_meal_plan)    
-        return render_template('my_meal_plan.html', user=user, saved_meal_plans=saved_meal_plans, current_meal_plan=current_meal_plan)
     except:
-    
-    # if not, don't worry! just don't return it
         flash('No current meal plan')
         return render_template('my_meal_plan.html', user=user, saved_meal_plans=saved_meal_plans)
     
+    return render_template('my_meal_plan.html', user=user, saved_meal_plans=saved_meal_plans, current_meal_plan=current_meal_plan)
 
 @app.route('/meals/<meal_id>', methods=['GET'])
 def get_meal(meal_id):
