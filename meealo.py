@@ -79,7 +79,13 @@ def my_meal_plan():
     
     if request.method == 'POST':
         print('hi')
-        print(request.form['button'])
+        print(request.form['userid'])
+        print(request.form['mpid'])
+
+        user = User.objects.get(id=request.form['userid'])
+        mp = Meal_Plan.objects.get(id=request.form['mpid'])
+        
+        user.current_meal_plan = mp
         return redirect(url_for('my_meal_plan'))    
     else:
         try:
