@@ -15,7 +15,11 @@ function drop(ev) {
 	var data = ev.dataTransfer.getData("text");
 	var img = document.getElementById(data);
 	var canvas = ev.target;
-	canvas.getContext("2d").drawImage(img, 
-		canvas.width / 2 - img.width / 2,
-		canvas.height / 2 - img.height / 2);
+	var ctx = canvas.getContext("2d");
+	ctx.drawImage(img, 0, 0, 75, 75);
+	ctx.globalCompositeOperation='destination-in';	
+	ctx.beginPath();
+	ctx.arc(canvas.width/2, canvas.height/2, 37, 0, Math.PI*2);
+	ctx.fillStyle = "#FFFFFF";
+	ctx.fill();
 }
