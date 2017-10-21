@@ -253,7 +253,6 @@ def add_meal_plan():
     meal_plan.name = request.form['name']
     meal_plan.meal_id_list = meal_ids
     meal_plan.duration = request.form['duration']
-    meal_plan.start_date = request.form['start_date']
     meal_plan.save()
     user = User.objects(id = ObjectId(session['session_userid'])).get()
     user.meal_plan_ids.append(meal_plan.id)
