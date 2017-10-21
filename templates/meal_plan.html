@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block extra_head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheet/my_meal_plan.css') }}" >
+{% endblock %}
+{% block body %}    
+   
+<div class="container-fluid">
+	<div class="row justify-content-md-center my-meal-plan-form">
+    	<div>
+    		<h1> {{ meal_plan.name }} </h1>
+      	</div>
+    </div>
+    		
+			{% for day in meal_plan.meal_id_list %}
+				<div class="row align-items-center">
+					<details>
+               			<summary>
+                  			<h2>Day {{ loop.index0 + 1 }}</h2>
+                		</summary>
+              			<div class="row align-items-center">
+				{% for m in day %}
+							<div class="col-sm-2">
+								<div>
+									<h3> {{ m.name }} </h3>
+								</div>
+								<div>
+                       			<img src={{ m.img_url }} id={{ m._id }} class="img-fluid img-thumbnail" alt="Meal image">
+                       			</div>
+                    		</div>
+				{% endfor %}
+						</div>
+				    </details>
+				</div>
+				
+			{% endfor %}
+
+    
+</div>
+   
+   
+</script>
+
+<!-- bootstrap required scripts -->
+<script src="{{ url_for('static', filename='javascript/circle_canvas.js') }}"></script>
+<script src="{{ url_for('static', filename='javascript/dragNdrop.js') }}"></script>
+{% endblock %}

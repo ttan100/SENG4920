@@ -43,6 +43,7 @@
               <input type="hidden" class="form-control" name="mpid" value="{{user.current_meal_plan.id}}">       
               <input type="hidden" class="form-control" name="action" value="cancel">        
               <button type="submit" class="btn btn-primary btn-block">Cancel Current Meal Plan</button>
+              <small> <a class="nav-link" href="/meal_plans/{{user.current_meal_plan.id}}">View plan details</a></small>
             </div>
           </form>
         </div>
@@ -89,9 +90,10 @@
                   <input type="hidden" class="form-control" name="mpid" value="{{mp.id}}">       
                   <input type="hidden" class="form-control" name="action" value="start">        
                   <button type="submit" class="btn btn-primary btn-block">Start Meal Plan</button>
+                  <small> <a class="nav-link" href="/meal_plans/{{mp.id}}">View plan details</a></small>
                 </div>
               </form>
-          {% endfor %}
+            {% endfor %}
         </div>
       {% else %}
         <p> There is currently no saved meal plans. Please go to add plan and create one now! </p>
