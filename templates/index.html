@@ -116,8 +116,12 @@
 	function setDroppable() {
 		var c = document.getElementsByClassName("meal_drop_circle");
 		for (var i = 0; i < c.length; i++) {
-			c[i].ondrop = drop(event);
-			c[i].ondragover = allowDrop(event);
+			c[i].ondrop = function() {
+				drop(event);
+			}
+			c[i].ondragover = function() {
+				allowDrop(event);
+			}
 		}
 	}
 	
