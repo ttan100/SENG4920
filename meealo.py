@@ -92,17 +92,28 @@ def my_meal_plan():
             print('This is:')
             print(request.form['userid'])
             print(request.form['mpid'])
+            print(mp)
 
+        
+            print('before:')
+            print(user.current_meal_plan)
+            
             # Set the current_meal_plan to the one requested
-            user.current_meal_plan = mp.id
+            user.current_meal_plan = mp
             user.start_date = datetime.datetime.now()
             user.save()
+            print('after:')
+            print(user.current_meal_plan)
         # remove current meal plan button
         else:
             # Set current meal plan to None
+            print('before:')
+            print(user.current_meal_plan)
             user.current_meal_plan = None
             user.start_date = None
             user.save()
+            print('after:')
+            print(user.current_meal_plan)
 
         return redirect(url_for('my_meal_plan'))
     else:
@@ -112,22 +123,20 @@ def my_meal_plan():
         user = User.objects(id=ObjectId(session['session_userid'])).get();
 
         # variables to check
-        saved_meal_plans = []
-        current_meal_plan = user.current_meal_plan
+        #saved_meal_plans = []
+        #current_meal_plan = user.current_meal_plan
 
         # Find if there's any saved/current meal plans for this user    
-        try:
-            for mp in user.meal_plan_ids:     
-                saved_meal_plans.append(Meal_Plan.objects(id=mp.id).get())
-        except:
-            flash('No saved meal plan')
+        #try:
+        #    for mp in user.meal_plan_ids:     
+        #        saved_meal_plans.append(Meal_Plan.objects(id=mp.id).get())
+        #except:
+        #    flash('No saved meal plan')
         
  
         
         # Go to my meal plan page
-        return render_template('my_meal_plan.html', user=user, 
-                                saved_meal_plans=saved_meal_plans, 
-                                current_meal_plan=current_meal_plan)
+        return render_template('my_meal_plan.html', user=user)
         #except:
         #    flash('Error: no sessionid but still on this page')
         #    return render_template('index.html')
@@ -225,9 +234,23 @@ def add_meal_plan():
         flash('Please log in to save your meal plan.')
         return redirect(url_for('login'))
     meal_ids = [ObjectId(y) for y in (x.strip() for x in request.form['meal_ids'].split('--')) if y]
+
+
     meal_plan = Meal_Plan()
     meal_plan.name = request.form['name']
-    meal_plan.meal_id_list = meal_ids
+    #meal_plan.meal_id_list = meal_ids
+
+    # Add meal_id_list by days
+    # ie. [[meal, meal, meal], [meal, meal, meal]]
+    i = 0
+    while i < len(meal_ids):
+        meal_plan_day = []
+        meal_plan_day.append(meal_ids[i])   
+        meal_plan_day.append(meal_ids[i+1])               
+        meal_plan_day.append(meal_ids[i+2]) 
+        meal_plan.meal_id_list.append(meal_plan_day)
+        i += 3
+
     meal_plan.duration = request.form['duration']
     meal_plan.save()
     user = User.objects(id = ObjectId(session['session_userid'])).get()

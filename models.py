@@ -52,7 +52,7 @@ class Meal(Document):
 class Meal_Plan(Document):
     viewable = BooleanField(default=False)
     name = StringField()
-    meal_id_list = ListField(ReferenceField(Meal, reverse_delete_rule=PULL))
+    meal_id_list = ListField(ListField(ReferenceField(Meal, reverse_delete_rule=PULL)))
     ratings = EmbeddedDocumentField(Rating, default=Rating)
     duration = IntField()
     tags = ListField(StringField())
@@ -67,5 +67,5 @@ class User(Document):
     meal_plan_ids = ListField(ReferenceField(Meal_Plan, reverse_delete_rule=PULL))
     current_meal_plan = ReferenceField(Meal_Plan, reverse_delete_rule=PULL)
     meal_plan_start_date = DateTimeField()
-    def clean(self):
-    	self.current_meal_plan = dummy_meal_plan_id
+    #def clean(self):
+    #	self.current_meal_plan = None #dummy_meal_plan_id

@@ -11,11 +11,11 @@
       </div>
     </div>
     <div class="row justify-content-md-center"> 
-      {% if current_meal_plan %}
+      {% if user.current_meal_plan %}
       <div id="current-meal-plan">
         <div class="container">
           <div class="row">
-            {% for mday in current_meal_plan %}
+            {% for mday in user.current_meal_plan.meal_id_list %}
                 <div class="col card">
                   <div class="card-body">
                     <div class="row">
@@ -40,7 +40,7 @@
           <form method=POST action="{{ url_for('my_meal_plan') }}">
             <div class="form-group">
               <input type="hidden" class="form-control" name="userid" value="{{user.id}}">       
-              <input type="hidden" class="form-control" name="mpid" value="{{current_meal_plan.id}}">       
+              <input type="hidden" class="form-control" name="mpid" value="{{user.current_meal_plan.id}}">       
               <input type="hidden" class="form-control" name="action" value="cancel">        
               <button type="submit" class="btn btn-primary btn-block">Cancel Current Meal Plan</button>
             </div>
@@ -53,16 +53,16 @@
     </div>
     <div class="row justify-content-md-center my-meal-plan-form">
       <div>
-        <h1> Saved Meal Plans </h1>
+        <h1> Saved Meal Plans</h1>
       </div>
     </div>
     <div class="row justify-content-md-center"> 
-      {% if saved_meal_plans %}
+      {% if user.meal_plan_ids %}
         <div id="saved-meal-plans" class="col-sm-8">
-          {% for mp in saved_meal_plans %}
+          {% for mp in user.meal_plan_ids %}
             <div class="container">
               <div class="row">
-                {% for mday in mp %}
+                {% for mday in mp.meal_id_list %}
                 <div class="col card">
                   <div class="card-body">
                     <div class="row">
