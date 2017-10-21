@@ -1,5 +1,6 @@
 from mongoengine import *
 from dotenv import load_dotenv, find_dotenv
+from bson.objectid import ObjectId
 import os
 import datetime
 
@@ -15,7 +16,10 @@ connect(
 )
 
 DIFFICULTY = ('Easy', 'Medium', 'Hard', 'Expert')
-    
+
+dummy_meal_id = ObjectId("59eb393e35b605144614198c")
+dummy_meal_plan_id = ObjectId("59eb36c335b60513f01601d5")
+
 class Rating(EmbeddedDocument):
     zero = IntField()
     one = IntField()
@@ -63,3 +67,5 @@ class User(Document):
     meal_plan_ids = ListField(ReferenceField(Meal_Plan, reverse_delete_rule=PULL))
     current_meal_plan = ReferenceField(Meal_Plan, reverse_delete_rule=PULL)
     meal_plan_start_date = DateTimeField()
+    def clean(self):
+    	self.current_meal_plan = dummy_meal_plan_id
