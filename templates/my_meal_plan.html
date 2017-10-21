@@ -27,6 +27,14 @@
             {% endfor %}
             </div>
           </div>
+          <form method=POST action="{{ url_for('my_meal_plan') }}">
+            <div class="form-group">
+              <input type="hidden" class="form-control" name="userid" value="{{user.id}}">       
+              <input type="hidden" class="form-control" name="mpid" value="{{current_meal_plan.id}}">       
+              <input type="hidden" class="form-control" name="action" value="cancel">        
+              <button type="submit" class="btn btn-primary btn-block">Cancel Current Meal Plan</button>
+            </div>
+          </form>
         </div>
       </div>
     {% else %}
