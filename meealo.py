@@ -109,17 +109,48 @@ def my_meal_plan():
 
         # variables to check
         saved_meal_plans = []
-        current_meal_plan = user.current_meal_plan
-
+        
+        current_meal_plan = []
         # Find if there's any saved/current meal plans for this user    
         try:
             for mp in user.meal_plan_ids:     
-                saved_meal_plans.append(Meal_Plan.objects(id=mp.id).get())
+                print(mp.meal_id_list)
+                meal_plan = []
+                i = 0
+                while i < len(mp.meal_id_list):
+                    meal_plan_day = []
+                    meal_plan_day.append(mp.meal_id_list[i])
+                    meal_plan_day.append(mp.meal_id_list[i+1])
+                    meal_plan_day.append(mp.meal_id_list[i+2])
+
+                    meal_plan.append(meal_plan_day)
+                    i+=3
+                saved_meal_plans.append(meal_plan)
+
         except:
+            print('error:no saved meal plan')
             flash('No saved meal plan')
         
- 
+        print("saved meal plan:")
+        print(saved_meal_plans)
         
+        try:
+            meal_plan = []
+            i = 0
+            mp = user.current_meal_plan
+            while i < len(mp.meal_id_list):
+                meal_plan_day = []
+                meal_plan_day.append(mp.meal_id_list[i])
+                meal_plan_day.append(mp.meal_id_list[i+1])
+                meal_plan_day.append(mp.meal_id_list[i+2])
+                current_meal_plan.append(meal_plan_day)
+                i+=3
+
+        except:
+            print('error:no current meal plan')
+
+        print("current meal plan:")
+        print(current_meal_plan)
         # Go to my meal plan page
         return render_template('my_meal_plan.html', user=user, 
                                 saved_meal_plans=saved_meal_plans, 

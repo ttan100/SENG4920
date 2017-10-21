@@ -15,15 +15,25 @@
       <div id="current-meal-plan">
         <div class="container">
           <div class="row">
-            {% for m in current_meal_plan.meal_id_list %}
-            <div class="col card" style="width: 20rem;">
-              <div class="card-body">
-                <p class="card-text">
-                  {{ m.name }}
-                </p>
-              </div>
-              <image class="card-img-bottom" src="{{ m.img_url }}" alt="picture of food?">
-            </div>
+            {% for mday in current_meal_plan %}
+                <div class="col card">
+                  <div class="card-body">
+                    <div class="row">
+                      {% for m in mday %}
+                        <div class="col">
+                          <p> {{ m.name }} </p>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  <div class="row">
+                    {% for m in mday %}
+                      <div class="col">
+                        <image class="card-img-bottom img-rounded" src="{{ m.img_url }}" alt="{{ m.name }}">
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
             {% endfor %}
             </div>
           </div>
@@ -52,23 +62,23 @@
           {% for mp in saved_meal_plans %}
             <div class="container">
               <div class="row">
-                {% for m in mp.meal_id_list %}
+                {% for mday in mp %}
                 <div class="col card">
                   <div class="card-body">
-                    <h4 class="card-title">
-                      {{ m.name }}
-                    </h4>
+                    <div class="row">
+                      {% for m in mday %}
+                        <div class="col">
+                          <p> {{ m.name }} </p>
+                        </div>
+                      {% endfor %}
+                    </div>
                   </div>
                   <div class="row">
-                    <div class="col">
-                      <image class="card-img-bottom img-rounded" src="{{ m.img_url }}" alt="{{ m.name }}">
-                    </div>
-                    <div class="col">
-                      <image class="card-img-bottom img-rounded" src="{{ m.img_url }}" alt="{{ m.name }}">
-                    </div>
-                    <div class="col">
-                      <image class="card-img-bottom img-rounded" src="{{ m.img_url }}" alt="{{ m.name }}">
-                    </div>
+                    {% for m in mday %}
+                      <div class="col">
+                        <image class="card-img-bottom img-rounded" src="{{ m.img_url }}" alt="{{ m.name }}">
+                      </div>
+                    {% endfor %}
                   </div>
                 </div>
                 {% endfor %}
