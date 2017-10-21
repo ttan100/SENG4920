@@ -9,8 +9,7 @@ from bson.objectid import ObjectId
 from models import *
 
 app = Flask(__name__)
-dummy_meal_id = ObjectId("59eb393e35b605144614198c")
-dummy_meal_plan_id = ObjectId("59eb36c335b60513f01601d5")
+
 
 # dumps mongo data object as json
 def toJson(data):
@@ -79,6 +78,9 @@ def logout():
 
 @app.route('/my_meal_plan', methods=['GET', 'POST'])
 def my_meal_plan():
+    if('session_userid' not in session):
+        flash('Please log in to view your meal plans.')
+        return redirect(url_for('login'))
     if request.method == 'POST':
         print('Post request')
         # Grab values from the form
@@ -215,24 +217,24 @@ def get_meal_plans():
 
 @app.route('/meal_plans/<meal_plan_id>', methods=['GET'])
 def get_meal_plan(meal_plan_id):
-    return User.objects(id = user_id).to_json()
+    return User.objects(id = meal_plan_id).to_json()
 
 @app.route('/meal_plans', methods=['POST'])
 def add_meal_plan():
-    if('session_userid' in session):
-        meal_ids = [ObjectId(y) for y in (x.strip() for x in request.form['meal_ids'].split('--')) if y]
-        meal_plan = Meal_Plan()
-        meal_plan.name = request.form['name']
-        meal_plan.meal_id_list = meal_ids
-        meal_plan.duration = request.form['duration']
-        meal_plan.save()
-        user = User.objects(id = ObjectId(session['session_userid'])).get()
-        user.meal_plan_ids.append(meal_plan.id)
-        user.update(set__meal_plan_ids=user.meal_plan_ids)
-        return redirect(url_for('my_meal_plan'))
-    else:
+    if('session_userid' not in session):
         flash('Please log in to save your meal plan.')
         return redirect(url_for('login'))
+    meal_ids = [ObjectId(y) for y in (x.strip() for x in request.form['meal_ids'].split('--')) if y]
+    meal_plan = Meal_Plan()
+    meal_plan.name = request.form['name']
+    meal_plan.meal_id_list = meal_ids
+    meal_plan.duration = request.form['duration']
+    meal_plan.save()
+    user = User.objects(id = ObjectId(session['session_userid'])).get()
+    user.meal_plan_ids.append(meal_plan.id)
+    user.update(set__meal_plan_ids=user.meal_plan_ids)
+    return redirect(url_for('my_meal_plan'))
+    	
 
 
 @app.route('/meal_plans/<meal_plan_id>', methods=['PATCH'])
