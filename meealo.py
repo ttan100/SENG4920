@@ -231,7 +231,7 @@ def add_meal_plan():
         user.update(set__meal_plan_ids=user.meal_plan_ids)
         return redirect(url_for('my_meal_plan'))
     else:
-    	flash('Please log in to save your meal plan.')
+        flash('Please log in to save your meal plan.')
         return redirect(url_for('login'))
 
 
