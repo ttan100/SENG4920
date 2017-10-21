@@ -7,6 +7,7 @@ from flask_restplus import Resource
 from bson import json_util
 from bson.objectid import ObjectId
 from models import *
+from jinja2 import *
 
 app = Flask(__name__)
 
@@ -92,28 +93,17 @@ def my_meal_plan():
             print('This is:')
             print(request.form['userid'])
             print(request.form['mpid'])
-            print(mp)
 
-        
-            print('before:')
-            print(user.current_meal_plan)
-            
             # Set the current_meal_plan to the one requested
-            user.current_meal_plan = mp
+            user.current_meal_plan = mp.id
             user.start_date = datetime.datetime.now()
             user.save()
-            print('after:')
-            print(user.current_meal_plan)
         # remove current meal plan button
         else:
             # Set current meal plan to None
-            print('before:')
-            print(user.current_meal_plan)
             user.current_meal_plan = None
             user.start_date = None
             user.save()
-            print('after:')
-            print(user.current_meal_plan)
 
         return redirect(url_for('my_meal_plan'))
     else:
@@ -123,20 +113,22 @@ def my_meal_plan():
         user = User.objects(id=ObjectId(session['session_userid'])).get();
 
         # variables to check
-        #saved_meal_plans = []
-        #current_meal_plan = user.current_meal_plan
+        saved_meal_plans = []
+        current_meal_plan = user.current_meal_plan
 
         # Find if there's any saved/current meal plans for this user    
-        #try:
-        #    for mp in user.meal_plan_ids:     
-        #        saved_meal_plans.append(Meal_Plan.objects(id=mp.id).get())
-        #except:
-        #    flash('No saved meal plan')
+        try:
+            for mp in user.meal_plan_ids:     
+                saved_meal_plans.append(Meal_Plan.objects(id=mp.id).get())
+        except:
+            flash('No saved meal plan')
         
  
         
         # Go to my meal plan page
-        return render_template('my_meal_plan.html', user=user)
+        return render_template('my_meal_plan.html', user=user, 
+                                saved_meal_plans=saved_meal_plans, 
+                                current_meal_plan=current_meal_plan)
         #except:
         #    flash('Error: no sessionid but still on this page')
         #    return render_template('index.html')
@@ -226,7 +218,8 @@ def get_meal_plans():
 
 @app.route('/meal_plans/<meal_plan_id>', methods=['GET'])
 def get_meal_plan(meal_plan_id):
-    return User.objects(id = meal_plan_id).to_json()
+    meal_plan = Meal_Plan.objects(id = meal_plan_id).get()
+    return render_template('meal_plan.html', meal_plan=meal_plan)
 
 @app.route('/meal_plans', methods=['POST'])
 def add_meal_plan():
