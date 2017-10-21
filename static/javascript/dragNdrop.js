@@ -16,10 +16,18 @@ function drop(ev) {
 	var img = document.getElementById(data);
 	var canvas = ev.target;
 	var ctx = canvas.getContext("2d");
-	ctx.drawImage(img, 0, 0, 75, 75);
-	ctx.globalCompositeOperation='destination-in';	
+	
+	ctx.save();
 	ctx.beginPath();
 	ctx.arc(canvas.width/2, canvas.height/2, 37, 0, Math.PI*2);
-	ctx.fillStyle = "#FFFFFF";
-	ctx.fill();
+	ctx.closePath();
+	ctx.clip();
+	
+	ctx.drawImage(img, 0, 0, 75, 75);
+	
+	ctx.beginPath();
+	ctx.arc(canvas.width/2, canvas.height/2, 37, 0, Math.PI*2);
+	ctx.clip();
+	ctx.closePath();
+	ctx.restore();
 }
