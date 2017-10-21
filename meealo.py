@@ -9,6 +9,8 @@ from bson.objectid import ObjectId
 from models import *
 
 app = Flask(__name__)
+dummy_meal_id = ObjectId("59eb393e35b605144614198c")
+dummy_meal_plan_id = ObjectId("59eb36c335b60513f01601d5")
 
 # dumps mongo data object as json
 def toJson(data):
@@ -18,8 +20,8 @@ def toJson(data):
 @app.route('/')
 def index():
 #    mongo.db.users.create_index("email", unique=True)
-    meals = Meal.objects.as_pymongo()
-    return render_template('index.html', meals=meals)
+    meals = Meal.objects(id__ne=dummy_meal_id).as_pymongo()
+    return render_template('index.html', meals=meals, dummy_meal_id=str(dummy_meal_id))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -109,48 +111,17 @@ def my_meal_plan():
 
         # variables to check
         saved_meal_plans = []
-        
-        current_meal_plan = []
+        current_meal_plan = user.current_meal_plan
+
         # Find if there's any saved/current meal plans for this user    
         try:
             for mp in user.meal_plan_ids:     
-                print(mp.meal_id_list)
-                meal_plan = []
-                i = 0
-                while i < len(mp.meal_id_list):
-                    meal_plan_day = []
-                    meal_plan_day.append(mp.meal_id_list[i])
-                    meal_plan_day.append(mp.meal_id_list[i+1])
-                    meal_plan_day.append(mp.meal_id_list[i+2])
-
-                    meal_plan.append(meal_plan_day)
-                    i+=3
-                saved_meal_plans.append(meal_plan)
-
+                saved_meal_plans.append(Meal_Plan.objects(id=mp.id).get())
         except:
-            print('error:no saved meal plan')
             flash('No saved meal plan')
         
-        print("saved meal plan:")
-        print(saved_meal_plans)
+ 
         
-        try:
-            meal_plan = []
-            i = 0
-            mp = user.current_meal_plan
-            while i < len(mp.meal_id_list):
-                meal_plan_day = []
-                meal_plan_day.append(mp.meal_id_list[i])
-                meal_plan_day.append(mp.meal_id_list[i+1])
-                meal_plan_day.append(mp.meal_id_list[i+2])
-                current_meal_plan.append(meal_plan_day)
-                i+=3
-
-        except:
-            print('error:no current meal plan')
-
-        print("current meal plan:")
-        print(current_meal_plan)
         # Go to my meal plan page
         return render_template('my_meal_plan.html', user=user, 
                                 saved_meal_plans=saved_meal_plans, 
@@ -248,16 +219,20 @@ def get_meal_plan(meal_plan_id):
 
 @app.route('/meal_plans', methods=['POST'])
 def add_meal_plan():
-    meal_ids = [ObjectId(y) for y in (x.strip() for x in request.form['meal_ids'].split('--')) if y]
-    meal_plan = Meal_Plan()
-    meal_plan.name = request.form['name']
-    meal_plan.meal_id_list = meal_ids
-    meal_plan.duration = request.form['duration']
-    meal_plan.save()
-    user = User.objects(id = ObjectId(session['session_userid'])).get()
-    user.meal_plan_ids.append(meal_plan.id)
-    user.update(set__meal_plan_ids=user.meal_plan_ids)
-    return redirect(url_for('index'))
+    if('session_userid' in session):
+        meal_ids = [ObjectId(y) for y in (x.strip() for x in request.form['meal_ids'].split('--')) if y]
+        meal_plan = Meal_Plan()
+        meal_plan.name = request.form['name']
+        meal_plan.meal_id_list = meal_ids
+        meal_plan.duration = request.form['duration']
+        meal_plan.save()
+        user = User.objects(id = ObjectId(session['session_userid'])).get()
+        user.meal_plan_ids.append(meal_plan.id)
+        user.update(set__meal_plan_ids=user.meal_plan_ids)
+        return redirect(url_for('my_meal_plan'))
+    else:
+    	flash('Please log in to save your meal plan.')
+        return redirect(url_for('login'))
 
 
 @app.route('/meal_plans/<meal_plan_id>', methods=['PATCH'])

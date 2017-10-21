@@ -153,40 +153,13 @@
 				}
 				plan[x] = event.dataTransfer.getData("text");
 				console.log(inplan);
-				if(inplan == dur * 3){
+				if(inplan > 0){
 					document.getElementById("saveMealPlanBtn").disabled = false;
 				}
 			}
 			c[i].ondragover = function() {
 				allowDrop(event);
 			}
-		}
-	}
-	
-	function displayPlan(){
-		console.log(plan);
-		var e = document.getElementById("siteAds");
-		e.innerHTML = "";
-		for (m in plan) {
-			var t = document.createElement("div");
-			t.innerHTML = plan[m].name + "  ";
-			var b = document.createElement('input');
-			b.type = 'button';
-			b.value = "x";
-			b.addEventListener('click', function() {
-    			removeMealFromPlan(m);
-			}, false);
-			t.appendChild(b);
-			e.appendChild(t);
-		}
-		if (plan.length != 0) {
-			var b = document.createElement('input');
-			b.type = 'button';
-			b.value = "Save Meal Plan";
-			b.addEventListener('click', function() {
-    			saveMealPlan();
-			}, false);
-			e.appendChild(b);
 		}
 	}
 	
@@ -213,7 +186,10 @@
   	function mealPlan(){
   		this.name = "test";
   		var mealidstr = "";
-  		for(i in plan) {
+  		for (var i = 0; i < plan.length; i++) {
+  			if(!plan[i]){
+  				plan[i] = "{{ dummy_meal_id }}"
+  			}
         	mealidstr = mealidstr + plan[i] + "--";
         }
 		this.meal_ids = mealidstr;
