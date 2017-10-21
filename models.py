@@ -63,6 +63,3 @@ class User(Document):
     meal_plan_ids = ListField(ReferenceField(Meal_Plan, reverse_delete_rule=PULL))
     current_meal_plan = ReferenceField(Meal_Plan, reverse_delete_rule=PULL)
     meal_plan_start_date = DateTimeField()
-    def clean(self):
-        self.current_meal_plan = None
-        self.start_date = datetime.datetime.now()

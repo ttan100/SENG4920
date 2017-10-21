@@ -54,6 +54,7 @@ def register():
             user.email=request.form['email']
             user.name=request.form['name']
             user.password=request.form['pass']
+            
             user.save()
             
             # Automatically login, for now no confirmation email
@@ -76,46 +77,56 @@ def logout():
 
 @app.route('/my_meal_plan', methods=['GET', 'POST'])
 def my_meal_plan():
-    
     if request.method == 'POST':
-        print('hi')
-        print(request.form['userid'])
-        print(request.form['mpid'])
-
+        print('Post request')
+        # Grab values from the form
         user = User.objects.get(id=request.form['userid'])
         mp = Meal_Plan.objects.get(id=request.form['mpid'])
-        
-        user.current_meal_plan = mp
-        return redirect(url_for('my_meal_plan'))    
+
+        #there are two form buttons, either start a mp or cancel current mp
+        if request.form['action'] == 'start':
+            print('This is:')
+            print(request.form['userid'])
+            print(request.form['mpid'])
+
+            # Set the current_meal_plan to the one requested
+            user.current_meal_plan = mp.id
+            user.start_date = datetime.datetime.now()
+            user.save()
+        # remove current meal plan button
+        else:
+            # Set current meal plan to None
+            user.current_meal_plan = None
+            user.start_date = None
+            user.save()
+
+        return redirect(url_for('my_meal_plan'))
     else:
+        # try
+        # my meal plan only appears if you are logged in, checked in index.html
+        # Firstly get the user
+        user = User.objects(id=ObjectId(session['session_userid'])).get();
+
+        # variables to check
+        saved_meal_plans = []
+        current_meal_plan = user.current_meal_plan
+
+        # Find if there's any saved/current meal plans for this user    
         try:
-            # my meal plan only appears if you are logged in, checked in index.html
-            # Firstly get the user
-            user = User.objects(id=ObjectId(session['session_userid'])).get();
-
-            # variables to check
-            saved_meal_plans = []
-            current_meal_plan = None
-
-            # Find if there's any saved/current meal plans for this user    
-            try:
-                for mp in user.meal_plan_ids:     
-                    saved_meal_plans.append(Meal_Plan.objects(id=mp.id).get())
-            except:
-                flash('No saved meal plan')
-            
-            try:
-                current_meal_plan = Meal_Plan.objects(id=user.current_meal_plan).get()
-            except:
-                flash('No current meal plan')
-            
-            # Go to my meal plan page
-            return render_template('my_meal_plan.html', user=user, 
-                                    saved_meal_plans=saved_meal_plans, 
-                                    current_meal_plan=current_meal_plan)
+            for mp in user.meal_plan_ids:     
+                saved_meal_plans.append(Meal_Plan.objects(id=mp.id).get())
         except:
-            flash('Error: no sessionid but still on this page')
-            return render_template('index.html')
+            flash('No saved meal plan')
+        
+ 
+        
+        # Go to my meal plan page
+        return render_template('my_meal_plan.html', user=user, 
+                                saved_meal_plans=saved_meal_plans, 
+                                current_meal_plan=current_meal_plan)
+        #except:
+        #    flash('Error: no sessionid but still on this page')
+        #    return render_template('index.html')
         
 @app.route('/meals/<meal_id>', methods=['GET'])
 def get_meal(meal_id):

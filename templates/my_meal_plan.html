@@ -18,9 +18,6 @@
             {% for m in current_meal_plan.meal_id_list %}
             <div class="col card" style="width: 20rem;">
               <div class="card-body">
-                <h4 class="card-title">
-                  {{ m.name }}
-                </h4>
                 <p class="card-text">
                   {{ m.name }}
                 </p>
@@ -28,17 +25,6 @@
               <image class="card-img-bottom" src="{{ m.img_url }}" alt="picture of food?">
             </div>
             {% endfor %}
-            <div class="col card" style="width: 20rem;">
-              <div class="card-body">
-                <h4 class="card-title">
-                  Day 2
-                </h4>
-                <p class="card-text">
-                  {{ user.meal_plan_ids }}
-                  {{ meal_plans.name }}
-
-                </p>
-              </div>              
             </div>
           </div>
         </div>
@@ -83,6 +69,7 @@
                 <div class="form-group">
                   <input type="hidden" class="form-control" name="userid" value="{{user.id}}">       
                   <input type="hidden" class="form-control" name="mpid" value="{{mp.id}}">       
+                  <input type="hidden" class="form-control" name="action" value="start">        
                   <button type="submit" class="btn btn-primary btn-block">Start Meal Plan</button>
                 </div>
               </form>
