@@ -39,7 +39,6 @@
                   {% endfor %}
                   </ol>
                 </p>
-                <button type="button" onclick="addMealToPlan('{{meal._id}}', '{{meal.name}}')"> Add meal </button>
               </details>
               <hr>
             {% endfor %}
@@ -64,11 +63,17 @@
 <!-- Page scripts -->
 <script>
 	var plan = [];
+	var inplan = 0;
+	var dur;
 	
 	function setDisplayPlan(duration) {
 			var num = 0;
+			plan = [];
+			inplan = 0;
+			dur = duration;
+			var e = document.getElementById("siteAds");
 			<!-- Resets the siteads div -->
-			document.getElementById("siteAds").innerHTML = "";
+			e.innerHTML = "";
 			var idCount = 0;
 			while (num < duration) {
 				num++;
@@ -84,7 +89,6 @@
 				var rowNode = document.createElement("div");
 				rowNode.className = "row";
 				var mealTime = ["Breakfast", "Lunch", "Dinner"];
-
 				for (var i = 0; i < 7; i++) {
 					var colNode = document.createElement("div");
 				
@@ -106,11 +110,20 @@
 					rowNode.appendChild(colNode);
 				}
 				detailsNode.appendChild(rowNode);
-				document.getElementById("siteAds").appendChild(detailsNode);
-				document.getElementById("siteAds").appendChild(document.createElement("hr"));
+				e.appendChild(detailsNode);
+				e.appendChild(document.createElement("hr"));
 			}
 			draw();
 			setDroppable();
+			var b = document.createElement('input');
+			b.type = 'button';
+			b.value = "Save Meal Plan";
+			b.id = "saveMealPlanBtn";
+			b.addEventListener('click', function() {
+    			saveMealPlan();
+			}, false);
+			e.appendChild(b);
+			b.disabled = true;
 	}
 	
 	function setDroppable() {
@@ -118,6 +131,15 @@
 		for (var i = 0; i < c.length; i++) {
 			c[i].ondrop = function() {
 				drop(event);
+				var x = this.id.match(/\d+$/)[0] - 1;
+				if(!plan[x]){
+					inplan++;
+				}
+				plan[x] = event.dataTransfer.getData("text");
+				console.log(inplan);
+				if(inplan == dur * 3){
+					document.getElementById("saveMealPlanBtn").disabled = false;
+				}
 			}
 			c[i].ondragover = function() {
 				allowDrop(event);
@@ -152,16 +174,6 @@
 		}
 	}
 	
-	function addMealToPlan(mealindex, mealname) {	
-		var m = {"id": mealindex, "name": mealname}
-  		plan.push(m);
-  		displayPlan();
-  	}
-  	
-  	function removeMealFromPlan(index){
-  		plan.splice(index, 1);
-  		displayPlan();
-  	}
   	
   	function saveMealPlan(){
   		params = new mealPlan();
@@ -186,11 +198,10 @@
   		this.name = "test";
   		var mealidstr = "";
   		for(i in plan) {
-        	mealidstr = mealidstr + plan[i].id + "--";
+        	mealidstr = mealidstr + plan[i] + "--";
         }
 		this.meal_ids = mealidstr;
-		this.duration = plan.length;
-		this.start_date = Date.now();
+		this.duration = dur;
   	}
   	
 </script>
