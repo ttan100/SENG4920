@@ -47,12 +47,19 @@
             <form>
                 <h3>Current meal plan</h3>
 				<hr>
-				<h4>Set your meal plan (days)?</h4>
+				<h4>How long is your meal plan for (days)?</h4>
 				<div class="row">
+					<div class="col-sm-2">
 					<button type="button" onclick="setDisplayPlan(3)" class="btn btn-outline-secondary btn-lg">3</button>
+					</div>
+					<div class="col-sm-2">
 					<button type="button" onclick="setDisplayPlan(5)" class="btn btn-outline-secondary btn-lg">5</button>
+					</div>
+					<div class="col-sm-2">
 					<button type="button" onclick="setDisplayPlan(7)" class="btn btn-outline-secondary btn-lg">7</button>
+					</div>
 				</div>
+				<br>
                 <div id="siteAds"></div>
             </form>
           </div>
@@ -74,42 +81,49 @@
 			var e = document.getElementById("siteAds");
 			<!-- Resets the siteads div -->
 			e.innerHTML = "";
+			var warningNode = document.createElement("h5");
+			warningNode.appendChild(document.createTextNode("Drag meal images to your meal plan"));
+			e.appendChild(warningNode);
 			var idCount = 0;
 			while (num < duration) {
 				num++;
-				var detailsNode = document.createElement("details")
-				var summaryNode = document.createElement("summary")
-				var titleNode = document.createElement("h3")
+				var detailsNode = document.createElement("details");
+				var summaryNode = document.createElement("summary");
+				var titleNode = document.createElement("h3");
 				var textNode = document.createTextNode("Day " + num);
 				
 				titleNode.appendChild(textNode);
 				summaryNode.appendChild(titleNode);
 				detailsNode.appendChild(summaryNode);
-				
-				var rowNode = document.createElement("div");
-				rowNode.className = "row";
+
 				var mealTime = ["Breakfast", "Lunch", "Dinner"];
-				for (var i = 0; i < 7; i++) {
-					var colNode = document.createElement("div");
+				var rowNode = document.createElement("div");
+				var rowNode2 = document.createElement("div");
 				
-					if (i < 3) {
-						var text = document.createTextNode(mealTime[i]);
-						colNode.className = "col";
-						colNode.appendChild(text);
-					} else if (i == 3) {
-						colNode.className = "w-100";
-					} else {
-						idCount++;
-						colNode.className = "col";
-						var circleNode = document.createElement("canvas");
-						circleNode.id = ("canvas" + idCount);
-						circleNode.className = "meal_drop_circle";
-						circleNode.appendChild(document.createTextNode("Your browser does not support HTML5 canvas tag."));
-						colNode.appendChild(circleNode);
-					}
+				rowNode.className = "row";
+				rowNode2.className = "row";
+				
+				for (var i = 0; i < 3; i++) {
+					var colNode = document.createElement("div");
+					var colNode2 = document.createElement("div");
+					var text = document.createTextNode(mealTime[i]);
+					var circleNode = document.createElement("canvas");
+
+					idCount++;
+					circleNode.id = ("canvas" + idCount);
+					circleNode.className = "meal_drop_circle";
+					circleNode.appendChild(document.createTextNode("Your browser does not support HTML5 canvas tag."));
+
+					colNode.className = "col";
+					colNode2.className = "col";
+					colNode.appendChild(text);
+					colNode2.appendChild(circleNode);
+
 					rowNode.appendChild(colNode);
+					rowNode2.appendChild(colNode2);
 				}
 				detailsNode.appendChild(rowNode);
+				detailsNode.appendChild(rowNode2);
 				e.appendChild(detailsNode);
 				e.appendChild(document.createElement("hr"));
 			}
