@@ -14,7 +14,8 @@ function drop(ev) {
 	ev.preventDefault();
 	var data = ev.dataTransfer.getData("text");
 	var img = document.getElementById(data);
-	var dx = pos[0] - img.offsetLeft;
-	var dy = pos[1] - img.offsetTop;
-	ev.target.getContext("2d").drawImage(document.getElementById(data), ev.pageX - dx, ev.pageY - dy);
+	var canvas = ev.target;
+	canvas.getContext("2d").drawImage(img, 
+		canvas.width / 2 - img.width / 2,
+		canvas.height / 2 - img.height / 2);
 }

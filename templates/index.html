@@ -16,7 +16,7 @@
                 <summary>
                   <div class="row align-items-center">
                       <div class="col-sm-2">
-                        <img src={{ meal.img_url }} draggable="true" onmousedown="get_pos(event)" ondragstart="drag(event)" class="img-fluid img-thumbnail" alt="Meal image">
+                        <img src={{ meal.img_url }} id={{ meal._id }} draggable="true" onmousedown="get_pos(event)" ondragstart="drag(event)" class="img-fluid img-thumbnail" alt="Meal image">
                       </div>
                       <div class="col-sm-10">
                           <h2>{{meal.name}}</h2>
