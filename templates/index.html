@@ -46,8 +46,10 @@
           <div class="col-sm-3 sb">
             <form>
                 <h3>Create your meal plan</h3>
-				<input type="text" class="form-control" value="My Meal Plan" aria-label="Meal plan name">
+				<input type="text" id="meal_plan_name" class="form-control" value="My Meal Plan" aria-label="Meal plan name">
 				<hr>
+				<h4>Set your tags</h4>
+				<select multiple data-role="tagsinput"></select>
 				<h4>How long is your meal plan for (days)?</h4>
 				<div class="row">
 					<div class="col-sm-2">
@@ -201,7 +203,6 @@
   	}
   	
   	function mealPlan(){
-  		this.name = "test";
   		var mealidstr = "";
   		for (var i = 0; i < dur*3; i++) {
   			if(!plan[i]){
@@ -210,7 +211,9 @@
         	mealidstr = mealidstr + plan[i] + "--";
         }
 		this.meal_ids = mealidstr;
+		this.name = document.getElementById("meal_plan_name");
 		this.duration = dur;
+		this.tags = $$("select").tagsinput('items');
   	}
   	
 	function deleteMealFromPlan(id) {
