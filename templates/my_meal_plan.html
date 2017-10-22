@@ -4,7 +4,6 @@
 {% endblock %}
 {% block body %}  
 
-
 <style>
 #current-meal-plan-container {
     position: relative;
@@ -41,6 +40,15 @@
   font-size: 24px;
   padding: 4px 8px;
 }
+
+.col-2 {
+  text-align: center;
+}
+
+h4 {
+  text-align: center;
+}
+
 </style>
 
 
@@ -54,30 +62,33 @@
       {% if user.current_meal_plan %}
         <div id="current-meal-plan">
           <div class="container">
+            <div class="row">
+              <div class="col-2">
+                <h4>Meal plan: {{ user.current_meal_plan.name }} </h4>
+              </div>
+              <div class="col">
+                <h4>Breakfast</h4>
+              </div>
+              <div class="col">
+                <h4>Lunch</h4>
+              </div>
+              <div class="col">
+                <h4>Dinner</h4>
+              </div>
+            </div>
             {% for mday in user.current_meal_plan.meal_id_list %}
               <div class="row">
-                <div class="col-2">
+                <div class="col-2 text">
                   Day {{ loop.index }}
                 </div>
                 {% for m in mday %}
                   <div class="col">
-
                     <div id="current-meal-plan-container" class="container">
                       <img src="{{ m.img_url }}" alt="{{m.name}}" class="image img-thumbnail">
                       <div class="middle">
-                      <div class="text"> {{m.name}} </div>
-                    </div>
-                  </div>                    
-
-
-<!--
-                    <div class="container">
-                      <img class="img" src="{{ m.img_url }}" alt="{{ m.name }}" />
-                      <div class="middle">
-                        <div class="text">John Doe</div>
+                        <div class="text"> {{m.name}} </div>
                       </div>
-                    </div>
-                    <image class="img-thumbnail" src="{{ m.img_url }}" alt="{{ m.name }}"> -->
+                    </div>                    
                   </div>
                 {% endfor %}
               </div>
