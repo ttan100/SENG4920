@@ -12,7 +12,7 @@
                   <div class="divider"> </div>
                   <button class="btn btn-outline-danger my-2 my-sm-0" onclick=clearSearch()>Clear</button>
                 </div>
-            <div class="col-sm-6">
+            <div class="col-sm-6" id="meal_display">
             {%for meal in meals%}
             <details id={{meal._id}}_details>
                 <summary>
@@ -223,7 +223,7 @@
 		this.meal_ids = mealidstr;
 		this.name = document.getElementById("meal_plan_name");
 		this.duration = dur;
-		this.tags = $$("select").tagsinput('items');
+		this.tags = $("select").tagsinput('items');
   	}
   	
 	function deleteMealFromPlan(id) {
