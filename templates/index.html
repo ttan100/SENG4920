@@ -100,31 +100,47 @@
 				var mealTime = ["Breakfast", "Lunch", "Dinner"];
 				var rowNode = document.createElement("div");
 				var rowNode2 = document.createElement("div");
+				var rowNode3 = document.createElement("div");
 				
 				rowNode.className = "row";
 				rowNode2.className = "row";
+				rowNode3.className = "row";
 				
 				for (var i = 0; i < 3; i++) {
 					var colNode = document.createElement("div");
 					var colNode2 = document.createElement("div");
+					var colNode3 = document.createElement("div");
 					var text = document.createTextNode(mealTime[i]);
 					var circleNode = document.createElement("canvas");
-
-					idCount++;
+					var deleteNode = document.createElement("button");
+					
 					circleNode.id = ("canvas" + idCount);
 					circleNode.className = "meal_drop_circle";
 					circleNode.appendChild(document.createTextNode("Your browser does not support HTML5 canvas tag."));
+					deleteNode.id = ("delete" + idCount);
+					deleteNode.innerHTML = "Remove meal";
+					deleteNode.className = "btn btn-outline-danger btn-sm";
+					deleteNode.addEventListener('click', function() {
+						deleteMealFromPlan(this.id);
+					}, false);
+					deleteNode.disabled = true;
 
 					colNode.className = "col";
 					colNode2.className = "col";
+					colNode3.className = "col";
 					colNode.appendChild(text);
 					colNode2.appendChild(circleNode);
-
+					colNode3.appendChild(deleteNode);
+					
 					rowNode.appendChild(colNode);
 					rowNode2.appendChild(colNode2);
+					rowNode3.appendChild(colNode3);
+					idCount++;
 				}
 				detailsNode.appendChild(rowNode);
 				detailsNode.appendChild(rowNode2);
+				detailsNode.appendChild(rowNode3);
+				
 				e.appendChild(detailsNode);
 				e.appendChild(document.createElement("hr"));
 			}
@@ -147,7 +163,7 @@
 		for (var i = 0; i < c.length; i++) {
 			c[i].ondrop = function() {
 				drop(event);
-				var x = this.id.match(/\d+$/)[0] - 1;
+				var x = this.id.match(/\d+$/)[0];
 				if(!plan[x]){
 					inplan++;
 				}
@@ -156,6 +172,7 @@
 				if(inplan > 0){
 					document.getElementById("saveMealPlanBtn").disabled = false;
 				}
+				b = document.getElementById("delete" + x).disabled = false;
 			}
 			c[i].ondragover = function() {
 				allowDrop(event);
@@ -196,6 +213,20 @@
 		this.duration = dur;
   	}
   	
+	function deleteMealFromPlan(id) {
+		console.log(id);
+		var sliceId = id.slice(6);
+		var canvasId = "canvas" + sliceId;
+		redraw(canvasId);
+		console.log(plan[sliceId]);
+		plan[sliceId] = undefined;
+		console.log(plan[sliceId]);
+		inplan--;
+		document.getElementById(id).disabled = true;
+		if (inplan <= 0) {
+			document.getElementById("saveMealPlanBtn").disabled = true;
+		}
+	}
 </script>
 
 <!-- bootstrap required scripts -->

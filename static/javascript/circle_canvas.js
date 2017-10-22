@@ -16,3 +16,16 @@ function draw() {
 		ctx.stroke();
 	}
 }
+
+function redraw(canvasId) {
+	var c = document.getElementById(canvasId);
+	c.width = 75;
+	c.height = 75;
+	var ctx = c.getContext("2d");
+	var centerX = c.width / 2;
+	var centerY = c.height / 2;
+	ctx.strokeStyle="#333333";
+	ctx.beginPath();
+	ctx.arc(centerX, centerY, 37, 0, 2 * Math.PI, false);
+	ctx.stroke();
+}
