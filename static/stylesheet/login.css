@@ -5,3 +5,7 @@ body {
 .login-form {
   padding-top: 10rem;
 }
+
+.text-red {
+	color: red;
+}
