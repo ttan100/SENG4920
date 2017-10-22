@@ -65,3 +65,8 @@ h4 {
   padding-bottom: 1rem;
   padding-right: 10rem;
 }
+
+.img-link{
+    color: black; 
+    text-decoration: none;
+}

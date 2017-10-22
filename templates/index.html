@@ -55,7 +55,7 @@
           <div class="col-sm-3 sb">
             <form>
                 <h3>Create your meal plan</h3>
-				<input type="text" id="meal_plan_name" class="form-control" placeholder="My Meal Plan" aria-label="Meal plan name">
+				<input type="text" id="meal_plan_name" class="form-control" placeholder="My Meal Plan" aria-label="Meal plan name" onkeydown="correctSaveButtonDisabled()">
 				<hr>
 				<h4>Set your tags</h4>
 				<select multiple data-role="tagsinput"></select>
@@ -130,7 +130,7 @@
 					circleNode.className = "meal_drop_circle";
 					circleNode.appendChild(document.createTextNode("Your browser does not support HTML5 canvas tag."));
 					deleteNode.id = ("delete" + idCount);
-					deleteNode.innerHTML = "Remove meal";
+					deleteNode.innerHTML = "Remove<br>meal";
 					deleteNode.className = "btn btn-outline-danger btn-sm";
 					deleteNode.addEventListener('click', function() {
 						deleteMealFromPlan(this.id);
@@ -167,7 +167,7 @@
     			saveMealPlan();
 			}, false);
 			e.appendChild(b);
-			b.disabled = true;
+			correctSaveButtonDisabled();
 	}
 	
 	function setDroppable() {
@@ -181,9 +181,7 @@
 				}
 				plan[x] = event.dataTransfer.getData("text");
 				console.log(inplan);
-				if(inplan > 0){
-					document.getElementById("saveMealPlanBtn").disabled = false;
-				}
+				correctSaveButtonDisabled();
 				b = document.getElementById("delete" + x).disabled = false;
 			}
 			c[i].ondragover = function() {
@@ -221,7 +219,7 @@
         	mealidstr = mealidstr + plan[i] + "--";
         }
 		this.meal_ids = mealidstr;
-		this.name = document.getElementById("meal_plan_name");
+		this.name = document.getElementById("meal_plan_name").value;
 		this.duration = dur;
 		this.tags = $("select").tagsinput('items');
   	}
@@ -236,8 +234,18 @@
 		console.log(plan[sliceId]);
 		inplan--;
 		document.getElementById(id).disabled = true;
-		if (inplan <= 0) {
-			document.getElementById("saveMealPlanBtn").disabled = true;
+		correctSaveButtonDisabled();
+	}
+	
+	function correctSaveButtonDisabled(){
+		var b = document.getElementById("saveMealPlanBtn");
+		if(b){
+			console.log("hello");
+			if(inplan > 0 && document.getElementById("meal_plan_name").value != ""){
+				b.disabled = false;
+			} else {
+				b.disabled = true;
+			}
 		}
 	}
 </script>

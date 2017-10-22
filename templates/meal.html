@@ -4,14 +4,17 @@
 {% endblock %}
 {% block body %}  
 
-<div class="container-fluid">
+
 	<div class="meal-image" style="background-image: url('{{meal.img_url}}');">
 	</div>
+	<div class="container-fluid">
+	<br>
     <div class="row justify-content-md-center">
     	<div>
         	<h1> {{ meal.name }} </h1>
     	</div>
     </div>
+    
     <div class="row justify-content-md-center">
     	<small id="{{meal._id}}_tags">Tags:
                 	{% for tag in meal.tags %}

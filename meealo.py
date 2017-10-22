@@ -150,7 +150,8 @@ def my_meal_plan():
         # Go to my meal plan page
         return render_template('my_meal_plan.html', user=user, 
                                 saved_meal_plans=saved_meal_plans, 
-                                current_meal_plan=current_meal_plan)
+                                current_meal_plan=current_meal_plan,
+                                dummy=dummy_meal_id)
         #except:
         #    flash('Error: no sessionid but still on this page')
         #    return render_template('index.html')
@@ -285,7 +286,7 @@ def get_meal_plans():
 @app.route('/meal_plans/<meal_plan_id>', methods=['GET'])
 def get_meal_plan(meal_plan_id):
     meal_plan = Meal_Plan.objects(id = meal_plan_id).get()
-    return render_template('meal_plan.html', meal_plan=meal_plan)
+    return render_template('meal_plan.html', meal_plan=meal_plan, dummy=dummy_meal_id)
 
 @app.route('/meal_plans', methods=['POST'])
 def add_meal_plan():

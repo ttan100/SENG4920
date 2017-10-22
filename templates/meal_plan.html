@@ -27,14 +27,23 @@
               Day {{ loop.index }}
             </div>
             {% for m in mday %}
-              <div class="col">
+            <div class="col">
+            {% if not m.id is equalto dummy %}
+            <a href="/meals/{{m.id}}" class="img-link">
+            {% endif %}
+              
                 <div id="current-meal-plan-container" class="container">
                   <img src="{{ m.img_url }}" alt="{{m.name}}" class="image img-thumbnail">
+                 
                   <div class="middle">
-                    <div class="text"> {{m.name}} </div>
+                    <div class="text"> {{m.name}}</div>
                   </div>
-                </div>                    
+                </div>  
+                {% if not m.id is equalto dummy %}
+            	</a>
+            	{% endif %}                  
               </div>
+               
             {% endfor %}
           </div>
         {% endfor %}
