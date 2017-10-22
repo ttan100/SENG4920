@@ -104,17 +104,18 @@ def my_meal_plan():
             rating=request.form['rating']
             
             # Update rating
-            meal_plan = update_meal_plan_ratings(mp.id, rating)
-            if meal_plan:
-                print('Rating added successfully!')
+            #meal_plan = update_meal_plan_ratings(mp.id, rating)
+            #if meal_plan:
+                #print('Rating added successfully!')
 
-            print(mp.ratings.avg)
+            # grab it again, hopefully it's updated 
+            mp = Meal_Plan.objects.get(id=request.form['mpid'])
+
             test = update_avg_meal_plan_rating(mp)
+            #if test:
+                #print('average added successfully!')
+                #print(mp.ratings.avg)
 
-            if test:
-                print('average added successfully!')
-                print(mp.ratings.avg)
-            
             # At the end, current meal plan
             user.current_meal_plan = None
             user.start_date = None
@@ -142,11 +143,10 @@ def my_meal_plan():
         try:
             for mp in user.meal_plan_ids:     
                 saved_meal_plans.append(Meal_Plan.objects(id=mp.id).get())
+
         except:
             flash('No saved meal plan')
-        
- 
-        
+                
         # Go to my meal plan page
         return render_template('my_meal_plan.html', user=user, 
                                 saved_meal_plans=saved_meal_plans, 
@@ -160,8 +160,7 @@ def update_avg_meal_plan_rating(mp):
 
     #mp = Meal_Plan.objects(id=mpid)
     
-    print(mp.ratings)
-
+    
     total = 0
     count = 0
     #count += int(float(mp.ratings.zero))
@@ -181,7 +180,7 @@ def update_avg_meal_plan_rating(mp):
     newAvg = round((total / count), 2)
 
     # **** UPDATE *******
-    mp.update(ratings__avg=newAvg)
+    mp.update(set__ratings__avg=newAvg)
 
     return mp
     
