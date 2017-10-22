@@ -12,7 +12,7 @@
                 </div>
             <div class="col-sm-6">
             {%for meal in meals%}
-            <details id={{meal._id}}>
+            <details id={{meal._id}}_details>
                 <summary>
                   <div class="row align-items-center">
                       <div class="col-sm-2">
@@ -247,7 +247,7 @@
 		for (i in c){
 			if(c[i].nodeName === "DETAILS"){
 				var flag = false;
-				var id = c[i].id;
+				var id = c[i].id.slice(0, -8);
 				c[i].removeAttribute("open");
 				var n = document.getElementById(id + "_name").innerHTML.toLowerCase();
 				if(n.indexOf(s) != -1){
