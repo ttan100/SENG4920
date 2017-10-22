@@ -1,33 +1,55 @@
 {% extends "layout.html" %}
 {% block extra_head %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheet/my_meal_plan.css') }}" >
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheet/meal.css') }}" >
 {% endblock %}
 {% block body %}  
 
-  <div class="container-fluid">
-    <div class="row justify-content-md-center my-meal-plan-form">
-      <div>
-        <h1 class="meal_title"> {{ meal.name }} </h1>
-      </div>
+<div class="container-fluid">
+	<div class="meal-image" style="background-image: url('{{meal.img_url}}');">
+	</div>
+    <div class="row justify-content-md-center">
+    	<div>
+        	<h1> {{ meal.name }} </h1>
+    	</div>
     </div>
-    <div class="row align-items-center">
-		<h5 class="ingredients">Ingredients</h3>
-		<ul>
+    <div class="row justify-content-md-center">
+    	<small id="{{meal._id}}_tags">Tags:
+                	{% for tag in meal.tags %}
+                	 {{tag}}
+                	{% endfor %}
+        </small>
+    </div>
+    <br>
+	<div class="col-centered">
+		<div class="row justify-content-md-center"
+			<p>
+				<h2>Ingredients</h2>
+			</p>
+		</div>
+		<div class="row justify-content-md-center">
+			<div class="col-centered">
+			<ul>
 			{% for ingredient in meal.ingredients %}
 				<li>{{ingredient}}</li>
 			{% endfor %}
-		</ul> 
+			</ul> 
+		</div>
 	</div>
-	<hr>
-    <div class="row align-items-center">
-		<h5 class="ingredients">Instructions:</h3>
-		<p > 
+	<br>
+	<div class="col-centered">
+		<div class="row justify-content-md-center"
+			<p>
+				<h2>Instructions</h2>
+			</p>
+		</div>
+		<div class="row justify-content-md-center">
+			<div class="col-centered">
 			<ol>
-				{% for step in meal.recipe %}
-					<li>{{step}}</li>
-				{% endfor %}
-			</ol>
-		</p>
+			{% for step in meal.recipe %}
+				<li>{{step}}</li>
+			{% endfor %}
+			</ul> 
+		</div>
 	</div>
   </div>
 
