@@ -98,6 +98,28 @@ def my_meal_plan():
             user.current_meal_plan = mp.id
             user.start_date = datetime.datetime.now()
             user.save()
+
+        elif request.form['action'] == 'finish':
+            
+            rating=request.form['rating']
+            
+            # Update rating
+            meal_plan = update_meal_plan_ratings(mp.id, rating)
+            if meal_plan:
+                print('Rating added successfully!')
+
+            print(mp.ratings.avg)
+            test = update_avg_meal_plan_rating(mp)
+
+            if test:
+                print('average added successfully!')
+                print(mp.ratings.avg)
+            
+            # At the end, current meal plan
+            user.current_meal_plan = None
+            user.start_date = None
+            user.save()
+        
         # remove current meal plan button
         else:
             # Set current meal plan to None
@@ -133,6 +155,51 @@ def my_meal_plan():
         #    flash('Error: no sessionid but still on this page')
         #    return render_template('index.html')
         
+
+def update_avg_meal_plan_rating(mp):
+
+    #mp = Meal_Plan.objects(id=mpid)
+    
+    print(mp.ratings)
+
+    total = 0
+    count = 0
+    #count += int(float(mp.ratings.zero))
+    count += int(float(mp.ratings.one))
+    count += int(float(mp.ratings.two))
+    count += int(float(mp.ratings.three))
+    count += int(float(mp.ratings.four))
+    count += int(float(mp.ratings.five))
+    
+    total += int(float(mp.ratings.one))
+    total += int(float(mp.ratings.two))*2
+    total += int(float(mp.ratings.three))*3
+    total += int(float(mp.ratings.four))*4
+    total += int(float(mp.ratings.five))*5
+    
+    print(mp.ratings.zero)
+    newAvg = round((total / count), 2)
+
+    # **** UPDATE *******
+    mp.update(ratings__avg=newAvg)
+
+    return mp
+    
+
+def update_meal_plan_ratings(mpid, rating):
+    if rating == "0":
+        return Meal_Plan.objects(id=mpid).update(inc__ratings__zero=1)
+    elif rating == "1":
+        return Meal_Plan.objects(id=mpid).update(inc__ratings__one=1)
+    elif rating == "2":
+        return Meal_Plan.objects(id=mpid).update(inc__ratings__two=1)
+    elif rating == "3":
+        return Meal_Plan.objects(id=mpid).update(inc__ratings__three=1)
+    elif rating == "4":
+        return Meal_Plan.objects(id=mpid).update(inc__ratings__four=1)
+    else:
+        return Meal_Plan.objects(id=mpid).update(inc__ratings__five=1)
+
 @app.route('/meals/<meal_id>', methods=['GET'])
 def get_meal(meal_id):
     return render_template('meal.html', meal=Meal.objects(id=meal_id).get())
