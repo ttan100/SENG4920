@@ -6,20 +6,20 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-3 sticky-top sb">
-                <form class="form-inline my-2 my-lg-0">
-                  <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </form></div>
+                  <input class="form-control mr-sm-2" type="text" placeholder="Search meals" aria-label="Search" id="search_box">
+                  <button class="btn btn-outline-success my-2 my-sm-0" onclick=search()>Search</button>
+                  <button class="btn btn-outline-danger my-2 my-sm-0" onclick=clearSearch()>Clear</button>
+                </div>
             <div class="col-sm-6">
             {%for meal in meals%}
-            <details>
+            <details id={{meal._id}}>
                 <summary>
                   <div class="row align-items-center">
                       <div class="col-sm-2">
                         <img src={{ meal.img_url }} id={{ meal._id }} draggable="true" onmousedown="get_pos(event)" ondragstart="drag(event)" class="img-fluid img-thumbnail" alt="Image of {{ meal.name }}">
                       </div>
                       <div class="col-sm-10">
-                          <h2>{{meal.name}}</h2>
+                          <h2 id={{meal._id}}_name>{{meal.name}}</h2>
                           <p>Approximate cooking time: {{meal.total_cooking_time}}</p>
                           <small> <a class="nav-link" href="/meals/{{meal._id}}">View details</a></small>
                       </div>
@@ -39,8 +39,15 @@
                   {% endfor %}
                   </ol>
                 </p>
+		<p>
+                	<small id="{{meal._id}}_tags">Tags:
+                	{% for tag in meal.tags %}
+                	 <a href="#" onclick=setSearch("{{tag}}")>{{tag}}</a>
+                	{% endfor %}
+                	 </small>
+                </p>
               </details>
-              <hr>
+              <hr id="{{meal._id}}_hr">
             {% endfor %}
             </div>
           <div class="col-sm-3 sb">
@@ -229,6 +236,59 @@
 		if (inplan <= 0) {
 			document.getElementById("saveMealPlanBtn").disabled = true;
 		}
+	}
+</script>
+
+<script>
+	function search(){
+		var s = document.getElementById("search_box").value.toLowerCase();
+		var md = document.getElementById("meal_display");
+		var c = md.childNodes;
+		for (i in c){
+			if(c[i].nodeName === "DETAILS"){
+				var flag = false;
+				var id = c[i].id;
+				c[i].removeAttribute("open");
+				var n = document.getElementById(id + "_name").innerHTML.toLowerCase();
+				if(n.indexOf(s) != -1){
+					flag = true;
+				} else {
+					var str = n + "_tags";
+					var tagBox = document.getElementById(id + "_tags");
+					var t = tagBox.childNodes;
+					for(j in t){
+						if(t[j].nodeName === "A" && t[j].innerHTML.toLowerCase() === s){
+							flag = true;
+						}
+					}
+				}
+				var h = document.getElementById(id + "_hr")
+				if (flag == true){
+					c[i].style.display = "block";
+					if (h){
+						h.style.display = "block";
+					}
+				} else {
+					c[i].style.display = "none";
+					if (h){
+						h.style.display = "none";
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	function setSearch(tag){
+		document.getElementById("search_box").value = tag;
+		search();
+		return false;
+	}
+	
+	function clearSearch(){
+		document.getElementById("search_box").value = "";
+		search();
+		return false;
 	}
 </script>
 
