@@ -40,7 +40,7 @@ def login():
                 flash('You were successfully logged in')
                 return redirect(url_for('index'))
         except:
-            flash('User does not exist')
+            error = 'User does not exist'
 
     return render_template('login.html', error=error)
 
