@@ -104,9 +104,9 @@ def my_meal_plan():
             rating=request.form['rating']
             
             # Update rating
-            #meal_plan = update_meal_plan_ratings(mp.id, rating)
-            #if meal_plan:
-                #print('Rating added successfully!')
+            meal_plan = update_meal_plan_ratings(mp.id, rating)
+            if meal_plan:
+                print('Rating added successfully!')
 
             # grab it again, hopefully it's updated 
             mp = Meal_Plan.objects.get(id=request.form['mpid'])
