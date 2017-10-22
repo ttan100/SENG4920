@@ -56,8 +56,6 @@ class Meal_Plan(Document):
     ratings = EmbeddedDocumentField(Rating, default=Rating)
     duration = IntField()
     tags = ListField(StringField())
-    def clean(self):
-        self.tags = []
 
 class User(Document):
     email = EmailField(required=True, unique=True)

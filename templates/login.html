@@ -19,7 +19,7 @@
                     <button type="submit" class="btn btn-primary btn-block">Log In</button>
                 </form>
                 <div class="text-red">
-                	{{error}}
+                	{% if error %}{{error}} {% else %} <br> {% endif %}
             	</div>
                 <div class="text-white">
                     Don't have an account? <a href="{{ url_for('register') }}">Sign up here</a>.

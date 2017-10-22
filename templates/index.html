@@ -52,8 +52,11 @@
               <hr id="{{meal._id}}_hr">
             {% endfor %}
             </div>
-          <div class="col-sm-3 sb">
-            <form>
+            {% if not session.session_user %}
+            <fieldset disabled=true>
+            {% endif %}
+          <div class="col-sm-3 sb pre-scrollable" id="meal_planner_div" >
+            <form id="meal_planner_form" >
                 <h3>Create your meal plan</h3>
 				<input type="text" id="meal_plan_name" class="form-control" placeholder="My Meal Plan" aria-label="Meal plan name" onkeydown="correctSaveButtonDisabled()">
 				<hr>
@@ -76,6 +79,9 @@
                 <div id="siteAds"></div>
             </form>
           </div>
+          {% if not session.session_user %}
+            </fieldset>
+            {% endif %}
       </div>
   </div>
   <!--<footer id="pageFooter">Footer</footer>-->
@@ -100,8 +106,8 @@
 			var idCount = 0;
 			while (num < duration) {
 				num++;
-				var detailsNode = document.createElement("details");
-				var summaryNode = document.createElement("summary");
+				var detailsNode = document.createElement("div");
+				var summaryNode = document.createElement("div");
 				var titleNode = document.createElement("h3");
 				var textNode = document.createTextNode("Day " + num);
 				
@@ -180,7 +186,6 @@
 					inplan++;
 				}
 				plan[x] = event.dataTransfer.getData("text");
-				console.log(inplan);
 				correctSaveButtonDisabled();
 				b = document.getElementById("delete" + x).disabled = false;
 			}
@@ -225,14 +230,11 @@
   	}
   	
 	function deleteMealFromPlan(id) {
-		console.log(id);
 		var sliceId = id.slice(6);
 		var canvasId = "canvas" + sliceId;
 		redraw(canvasId);
-		console.log(plan[sliceId]);
-		plan[sliceId] = undefined;
-		console.log(plan[sliceId]);
-		inplan--;
+		plan[sliceId] = undefined;		i
+		nplan--;
 		document.getElementById(id).disabled = true;
 		correctSaveButtonDisabled();
 	}
@@ -240,7 +242,6 @@
 	function correctSaveButtonDisabled(){
 		var b = document.getElementById("saveMealPlanBtn");
 		if(b){
-			console.log("hello");
 			if(inplan > 0 && document.getElementById("meal_plan_name").value != ""){
 				b.disabled = false;
 			} else {

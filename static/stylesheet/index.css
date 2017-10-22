@@ -18,6 +18,13 @@
   padding-bottom: 1rem;
   border: 1px solid rgba(86,61,124,.2);
 }
+
+.col-sm-9 {
+  padding-top: 4rem;
+  padding-bottom: 1rem;
+  border: 1px solid rgba(86,61,124,.2);
+}
+
 .sb {
   padding-top: 4.5rem;
 }
@@ -46,3 +53,12 @@
     height:auto;
     display:inline-block;
 }
+
+.pre-scrollable{
+	position: fixed;
+	top: 3.5rem;
+	right: 0rem;
+	max-height: 100vh;
+	float: right;
+}
+

@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+{% block extra_head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheet/index.css') }}" >
+{% endblock %}
+{% block body %}    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 sticky-top sb">
+                  <input class="form-control mr-sm-2" type="text" placeholder="Search plans" aria-label="Search" id="search_box">
+                  <div class="v_divider"></div>
+                  <button class="btn btn-outline-success my-2 my-sm-0" onclick=search()>Search</button>
+                  <div class="divider"> </div>
+                  <button class="btn btn-outline-danger my-2 my-sm-0" onclick=clearSearch()>Clear</button>
+                </div>
+            <div class="col-sm-9" id="plan_display">
+            {%for plan in meal_plans%}
+            <details id={{plan._id}}_details>
+                <summary>
+                  <div class="row align-items-center">
+                      <div class="col-sm-10">
+                          <h2 id={{plan._id}}_name>{{plan.name}}</h2>
+                          <p>Length: {{plan.duration}} days</p>
+                          <p>Rating: {{plan.ratings.avg}} stars</p>
+                          <small> <a class="nav-link" href="/meal_plans/{{plan._id}}">View details</a></small>
+                      </div>
+                  </div>
+                </summary>
+                <p>
+                	<small id="{{plan._id}}_tags">Tags:
+                	{% for tag in plan.tags %}
+                	 <a href="#" onclick=setSearch("{{tag}}")>{{tag}}</a>
+                	{% endfor %}
+                	</small>
+            </details>
+            <hr id="{{plan._id}}_hr">
+            {% endfor %}
+            </div>
+      </div>
+  </div>
+  <!--<footer id="pageFooter">Footer</footer>-->
+
+<!-- Page scripts -->
+
+<script>
+	function search(){
+		var s = document.getElementById("search_box").value.toLowerCase();
+		var md = document.getElementById("plan_display");
+		var c = md.childNodes;
+		for (i in c){
+			if(c[i].nodeName === "DETAILS"){
+				var flag = false;
+				var id = c[i].id.slice(0, -8);
+				c[i].removeAttribute("open");
+				var n = document.getElementById(id + "_name").innerHTML.toLowerCase();
+				if(n.indexOf(s) != -1){
+					flag = true;
+				} else {
+					var str = n + "_tags";
+					var tagBox = document.getElementById(id + "_tags");
+					var t = tagBox.childNodes;
+					for(j in t){
+						if(t[j].nodeName === "A" && t[j].innerHTML.toLowerCase() === s){
+							flag = true;
+						}
+					}
+				}
+				var h = document.getElementById(id + "_hr")
+				if (flag == true){
+					c[i].style.display = "block";
+					if (h){
+						h.style.display = "block";
+					}
+				} else {
+					c[i].style.display = "none";
+					if (h){
+						h.style.display = "none";
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	function setSearch(tag){
+		document.getElementById("search_box").value = tag;
+		search();
+		return false;
+	}
+	
+	function clearSearch(){
+		document.getElementById("search_box").value = "";
+		search();
+		return false;
+	}
+</script>
+
+
+<!-- bootstrap required scripts -->
+<script src="{{ url_for('static', filename='javascript/circle_canvas.js') }}"></script>
+<script src="{{ url_for('static', filename='javascript/dragNdrop.js') }}"></script>
+{% endblock %}

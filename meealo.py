@@ -105,8 +105,8 @@ def my_meal_plan():
             
             # Update rating
             meal_plan = update_meal_plan_ratings(mp.id, rating)
-            if meal_plan:
-                print('Rating added successfully!')
+            #if meal_plan:
+                #print('Rating added successfully!')
 
             # grab it again, hopefully it's updated 
             mp = Meal_Plan.objects.get(id=request.form['mpid'])
@@ -281,7 +281,8 @@ def delete_user(user_id):
 # meal plan data section    
 @app.route('/meal_plans', methods=['GET'])
 def get_meal_plans():
-    return Meal_Plan.objects.all().to_json()
+    meal_plans = Meal_Plan.objects(id__ne=dummy_meal_id).as_pymongo()
+    return render_template('view_meal_plans.html', meal_plans=meal_plans, dummy_meal_id=str(dummy_meal_id))
 
 @app.route('/meal_plans/<meal_plan_id>', methods=['GET'])
 def get_meal_plan(meal_plan_id):
