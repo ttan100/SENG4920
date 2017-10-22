@@ -41,3 +41,27 @@
 h4 {
     text-align: center;
 }
+
+.meal_title {
+  text-decoration: underline;
+
+}
+
+.ingredients {
+  padding-left: 7rem;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  color: green;
+  /*position: center;*/
+}
+
+.s_number {
+  padding-left: 10rem;
+}
+
+.steps {
+  padding-left: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-right: 10rem;
+}

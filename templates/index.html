@@ -7,7 +7,9 @@
         <div class="row">
             <div class="col-sm-3 sticky-top sb">
                   <input class="form-control mr-sm-2" type="text" placeholder="Search meals" aria-label="Search" id="search_box">
+                  <div class="v_divider"></div>
                   <button class="btn btn-outline-success my-2 my-sm-0" onclick=search()>Search</button>
+                  <div class="divider"> </div>
                   <button class="btn btn-outline-danger my-2 my-sm-0" onclick=clearSearch()>Clear</button>
                 </div>
             <div class="col-sm-6">
@@ -53,20 +55,21 @@
           <div class="col-sm-3 sb">
             <form>
                 <h3>Create your meal plan</h3>
-				<input type="text" id="meal_plan_name" class="form-control" value="My Meal Plan" aria-label="Meal plan name">
+				<input type="text" id="meal_plan_name" class="form-control" placeholder="My Meal Plan" aria-label="Meal plan name">
 				<hr>
 				<h4>Set your tags</h4>
 				<select multiple data-role="tagsinput"></select>
-				<h4>How long is your meal plan for (days)?</h4>
+				<hr>
+				<h4>How many days is your meal plan?</h4>
 				<div class="row">
 					<div class="col-sm-2">
-					<button type="button" onclick="setDisplayPlan(3)" class="btn btn-outline-secondary btn-lg">3</button>
+					<button type="button" onclick="setDisplayPlan(3)" class="btn btn-primary">3</button>
 					</div>
 					<div class="col-sm-2">
-					<button type="button" onclick="setDisplayPlan(5)" class="btn btn-outline-secondary btn-lg">5</button>
+					<button type="button" onclick="setDisplayPlan(5)" class="btn btn-primary">5</button>
 					</div>
 					<div class="col-sm-2">
-					<button type="button" onclick="setDisplayPlan(7)" class="btn btn-outline-secondary btn-lg">7</button>
+					<button type="button" onclick="setDisplayPlan(7)" class="btn btn-primary">7</button>
 					</div>
 				</div>
 				<br>
