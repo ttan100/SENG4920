@@ -4,46 +4,6 @@
 {% endblock %}
 {% block body %}  
 
-
-<style>
-#current-meal-plan-container {
-    position: relative;
-}
-
-.image {
-  opacity: 1;
-  width: 100%;
-  height: auto;
-  transition: .5s ease;
-  backface-visibility: hidden;
-}
-
-.middle {
-  transition: .5s ease;
-  opacity: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%)
-}
-
-#current-meal-plan-container:hover .image {
-  opacity: 0.3;
-}
-
-#current-meal-plan-container:hover .middle {
-  opacity: 1;
-}
-
-.text {
-  color: black;
-  font-size: 24px;
-  padding: 4px 8px;
-}
-</style>
-
-
   <div class="container-fluid">
     <div class="row justify-content-md-center my-meal-plan-form">
       <div>
@@ -56,44 +16,26 @@
           <div class="container">
             {% for mday in user.current_meal_plan.meal_id_list %}
               <div class="row">
-                <div class="col-2">
-                  Day {{ loop.index }}
+                <div class="col">
+                  Day 1
                 </div>
                 {% for m in mday %}
                   <div class="col">
-
-                    <div id="current-meal-plan-container" class="container">
-                      <img src="{{ m.img_url }}" alt="{{m.name}}" class="image img-thumbnail">
-                      <div class="middle">
-                      <div class="text"> {{m.name}} </div>
-                    </div>
-                  </div>                    
-
-
-<!--
-                    <div class="container">
-                      <img class="img" src="{{ m.img_url }}" alt="{{ m.name }}" />
-                      <div class="middle">
-                        <div class="text">John Doe</div>
-                      </div>
-                    </div>
-                    <image class="img-thumbnail" src="{{ m.img_url }}" alt="{{ m.name }}"> -->
+                    <image class="img-fluid img-thumbnail" src="{{ m.img_url }}" alt="{{ m.name }}">
                   </div>
                 {% endfor %}
               </div>
             {% endfor %}
           </div>
-          <div>
-            <small> <a class="nav-link" href="/meal_plans/{{user.current_meal_plan.id}}">View plan details</a></small>
-            <form method=POST action="{{ url_for('my_meal_plan') }}">
-              <div class="form-group">
-                <input type="hidden" class="form-control" name="userid" value="{{user.id}}">       
-                <input type="hidden" class="form-control" name="mpid" value="{{user.current_meal_plan.id}}">       
-                <input type="hidden" class="form-control" name="action" value="cancel">        
-                <button type="submit" class="btn btn-primary btn-block">Cancel Current Meal Plan</button>
-              </div>
-            </form>
-          </div>
+          <form method=POST action="{{ url_for('my_meal_plan') }}">
+            <div class="form-group">
+              <input type="hidden" class="form-control" name="userid" value="{{user.id}}">       
+              <input type="hidden" class="form-control" name="mpid" value="{{user.current_meal_plan.id}}">       
+              <input type="hidden" class="form-control" name="action" value="cancel">        
+              <button type="submit" class="btn btn-primary btn-block">Cancel Current Meal Plan</button>
+              <small> <a class="nav-link" href="/meal_plans/{{user.current_meal_plan.id}}">View plan details</a></small>
+            </div>
+          </form>
         </div>
       </div>
     {% else %}
@@ -125,8 +67,7 @@
                   <div class="row">
                     {% for m in mday %}
                       <div class="col">
-                        <image class="img-fluid img-thumbnaill" src="{{ m.img_url }}" alt="{{ m.name }}">
-                        
+                        <image class="card-img-bottom img-rounded" src="{{ m.img_url }}" alt="{{ m.name }}">
                       </div>
                     {% endfor %}
                   </div>
