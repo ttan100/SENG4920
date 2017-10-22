@@ -1,44 +1,31 @@
 .my-meal-plan-form {
   padding-top: 5rem;
 }
-/*
-#current-meal-plan-container {
-    position: relative;
+
+.card-img {
+  width: 33%;
 }
 
-.image {
-  opacity: 1;
-  width: 100%;
-  height: auto;
-  transition: .5s ease;
-  backface-visibility: hidden;
+.meal_title {
+  text-decoration: underline;
+
 }
 
-.middle {
-  transition: .5s ease;
-  opacity: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%)
+.ingredients {
+  padding-left: 7rem;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  color: green;
+  /*position: center;*/
 }
 
-#current-meal-plan-container:hover .image {
-  opacity: 0.3;
+.s_number {
+  padding-left: 10rem;
 }
 
-#current-meal-plan-container:hover .middle {
-  opacity: 1;
+.steps {
+  padding-left: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-right: 10rem;
 }
-
-.text {
-  color: black;
-  font-size: 24px;
-  padding: 4px 8px;
-}
-
-h4 {
-    text-align: center;
-}
-*/
