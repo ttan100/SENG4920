@@ -1,69 +1,57 @@
 {% extends "layout.html" %}
 {% block extra_head %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheet/my_meal_plan.css') }}" >
+<link rel="stylesheet" href="{{ url_for('static', filename='stylesheet/my_meal_plan.css') }}" >
 {% endblock %}
 {% block body %}  
-
 <style>
-#current-meal-plan-container {
+  #current-meal-plan-container {
     position: relative;
-}
-
-.image {
-  opacity: 1;
-  width: 100%;
-  height: auto;
-  transition: .5s ease;
-  backface-visibility: hidden;
-}
-
-.middle {
-  transition: .5s ease;
-  opacity: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%)
-}
-
-#current-meal-plan-container:hover .image {
-  opacity: 0.3;
-}
-
-#current-meal-plan-container:hover .middle {
-  opacity: 1;
-}
-
-.text {
-  color: black;
-  font-size: 24px;
-  padding: 4px 8px;
-}
-
-.col-2 {
-  text-align: center;
-}
-
-h4 {
-  text-align: center;
-}
-
-
-.rating {
+  }
+  .image {
+    opacity: 1;
+    width: 100%;
+    height: auto;
+    transition: .5s ease;
+    backface-visibility: hidden;
+  }
+  .middle {
+    transition: .5s ease;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%)
+  }
+  #current-meal-plan-container:hover .image {
+    opacity: 0.3;
+  }
+  #current-meal-plan-container:hover .middle {
+    opacity: 1;
+  }
+  .text {
+    color: black;
+    font-size: 24px;
+    padding: 4px 8px;
+  }
+  .col-2 {
+    text-align: center;
+  }
+  h4 {
+    text-align: center;
+  }
+  .rating {
     float:left;
-}
-
-/* :not(:checked) is a filter, so that browsers that don’t support :checked don’t 
-   follow these rules. Every browser that supports :checked also supports :not(), so
-   it doesn’t make the test unnecessarily selective */
-.rating:not(:checked) > input {
+  }
+  /* :not(:checked) is a filter, so that browsers that don’t support :checked don’t 
+  follow these rules. Every browser that supports :checked also supports :not(), so
+  it doesn’t make the test unnecessarily selective */
+  .rating:not(:checked) > input {
     position:absolute;
     top:-9999px;
     clip:rect(0,0,0,0);
-}
-
-.rating:not(:checked) > label {
+  }
+  .rating:not(:checked) > label {
     float:right;
     width:1em;
     padding:0 .1em;
@@ -74,220 +62,251 @@ h4 {
     line-height:1.2;
     color:#ddd;
     text-shadow:1px 1px #bbb, 2px 2px #666, .1em .1em .2em rgba(0,0,0,.5);
-}
-
-.rating:not(:checked) > label:before {
+  }
+  .rating:not(:checked) > label:before {
     content: '★ ';
-}
-
-.rating > input:checked ~ label {
+  }
+  .rating > input:checked ~ label {
     color: #f70;
     text-shadow:1px 1px #c60, 2px 2px #940, .1em .1em .2em rgba(0,0,0,.5);
-}
-
-.rating:not(:checked) > label:hover,
-.rating:not(:checked) > label:hover ~ label {
+  }
+  .rating:not(:checked) > label:hover,
+  .rating:not(:checked) > label:hover ~ label {
     color: gold;
     text-shadow:1px 1px goldenrod, 2px 2px #B57340, .1em .1em .2em rgba(0,0,0,.5);
-}
-
-.rating > input:checked + label:hover,
-.rating > input:checked + label:hover ~ label,
-.rating > input:checked ~ label:hover,
-.rating > input:checked ~ label:hover ~ label,
-.rating > label:hover ~ input:checked ~ label {
+  }
+  .rating > input:checked + label:hover,
+  .rating > input:checked + label:hover ~ label,
+  .rating > input:checked ~ label:hover,
+  .rating > input:checked ~ label:hover ~ label,
+  .rating > label:hover ~ input:checked ~ label {
     color: #ea0;
     text-shadow:1px 1px goldenrod, 2px 2px #B57340, .1em .1em .2em rgba(0,0,0,.5);
-}
-
-.rating > label:active {
+  }
+  .rating > label:active {
     position:relative;
     top:2px;
     left:2px;
-}
+  }
 </style>
-
-
-  <div class="container-fluid">
-    <div class="row justify-content-md-center my-meal-plan-form">
-      <div>
-        <h1> Current Meal Plan</h1>
-      </div>
+<div class="container-fluid">
+  <div class="row justify-content-md-center my-meal-plan-form">
+    <div>
+      <h1> Current Meal Plan
+      </h1>
     </div>
-    <div class="row justify-content-md-center"> 
-      {% if user.current_meal_plan %}
-        <div id="current-meal-plan">
-          <div class="container">
-            <div class="row">
-              <div class="col-2">
-                <h4>Meal plan: {{ user.current_meal_plan.name }} </h4>
-              </div>
-              <div class="col">
-                <h4>Breakfast</h4>
-              </div>
-              <div class="col">
-                <h4>Lunch</h4>
-              </div>
-              <div class="col">
-                <h4>Dinner</h4>
-              </div>
-            </div>
-            {% for mday in user.current_meal_plan.meal_id_list %}
-              <div class="row">
-                <div class="col-2 text">
-                  Day {{ loop.index }}
-                </div>
-                {% for m in mday %}
-                  <div class="col">
-                    {% if not m.id is equalto dummy %}
-            <a href="/meals/{{m.id}}" class="img-link">
-            {% endif %}
-              
-                <div id="current-meal-plan-container" class="container">
-                  <img src="{{ m.img_url }}" alt="{{m.name}}" class="image img-thumbnail">
-                 
-                  <div class="middle">
-                    <div class="text"> {{m.name}}</div>
-                  </div>
-                </div>  
-                {% if not m.id is equalto dummy %}
-            	</a>
-            	{% endif %}                     
-                  </div>
-                {% endfor %}
-              </div>
-            {% endfor %}
+  </div>
+  <div class="row justify-content-md-center"> 
+    {% if user.current_meal_plan %}
+    <div id="current-meal-plan">
+      <div class="container">
+        <div class="row">
+          <div class="col-2">
+            <h4>Meal plan: {{ user.current_meal_plan.name }} 
+            </h4>
           </div>
-          <div>
-            <small> <a class="nav-link" href="/meal_plans/{{user.current_meal_plan.id}}">View plan details</a></small>
-            <form method=POST action="{{ url_for('my_meal_plan') }}">
-              <div class="form-group">
-                <input type="hidden" class="form-control" name="userid" value="{{user.id}}">       
-                <input type="hidden" class="form-control" name="mpid" value="{{user.current_meal_plan.id}}">       
-                <input type="hidden" class="form-control" name="action" value="cancel">        
-                <button type="submit" class="btn btn-primary btn-block">Cancel Current Meal Plan</button>
-              </div>
-            </form>
-
-            <div>
-                <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Finish Meal Plan</button>
-
-                <!-- Modal -->
-                <div id="myModal" class="modal fade" role="dialog">
-                  <div class="modal-dialog">
-
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title">How do you rate this meal plan?</h5>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                      </div>
-                      <div class="modal-body">
-                        <form method=POST action="{{ url_for('my_meal_plan') }}">
-                          <fieldset class="rating justify-content-md-center">
-                            <legend>Rating</legend>
-                            <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="Terrific!">5 stars</label>
-                            <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="Pretty good">4 stars</label>
-                            <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="Meh">3 stars</label>
-                            <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="Kinda bad">2 stars</label>
-                            <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="Terrible">1 star</label>
-                          </fieldset>
-
-                            <input type="hidden" class="form-control" name="userid" value="{{user.id}}">       
-                            <input type="hidden" class="form-control" name="mpid" value="{{user.current_meal_plan.id}}">      
-                            <input type="hidden" class="form-control" name="action" value="finish">        
-                            <button type="submit" class="btn btn-primary btn-block">Submit</button>
-                          </div>
-                        </form>
-                      </div>
-                      <div class="modal-footer">
-
-                      </div>
-                    </div>
-
+          <div class="col">
+            <h4>Breakfast
+            </h4>
+          </div>
+          <div class="col">
+            <h4>Lunch
+            </h4>
+          </div>
+          <div class="col">
+            <h4>Dinner
+            </h4>
+          </div>
+        </div>
+        {% for mday in user.current_meal_plan.meal_id_list %}
+        <div class="row">
+          <div class="col-2 text">
+            Day {{ loop.index }}
+          </div>
+          {% for m in mday %}
+          <div class="col">
+            {% if not m.id is equalto dummy %}
+            <a href="/meals/{{m.id}}" class="img-link">
+              {% endif %}
+              <div id="current-meal-plan-container" class="container">
+                <img src="{{ m.img_url }}" alt="{{m.name}}" class="image img-thumbnail">
+                <div class="middle">
+                  <div class="text"> {{m.name}}
                   </div>
                 </div>
+              </div>  
+              {% if not m.id is equalto dummy %}
+            </a>
+            {% endif %}                     
+          </div>
+          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+      <div class="row">
+        <div class="col">
+        <small> 
+          <a class="nav-link" href="/meal_plans/{{user.current_meal_plan.id}}">View plan details
+          </a>
+        </small>
+        </div>
+        <div class="col">
+        <form method=POST action="{{ url_for('my_meal_plan') }}">
+          <div class="form-group">
+            <input type="hidden" class="form-control" name="userid" value="{{user.id}}">       
+            <input type="hidden" class="form-control" name="mpid" value="{{user.current_meal_plan.id}}">       
+            <input type="hidden" class="form-control" name="action" value="cancel">        
+            <button type="submit" class="btn btn-primary btn-lg">Cancel Current Meal Plan
+            </button>
+          </div>
+        </form>
+        </div>
+        <div class="col">
+          <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Finish Meal Plan
+          </button>
+          <!-- Modal -->
+          <div id="myModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">How do you rate this meal plan?
+                  </h5>
+                  <button type="button" class="close" data-dismiss="modal">&times;
+                  </button>
+                </div>
+                <div class="modal-body justify-content-md-center">
+                  <form method=POST action="{{ url_for('my_meal_plan') }}">
+                    <fieldset class="rating justify-content-md-center">
+                      <legend>Rating:
+                      </legend>
+                      <input type="radio" id="star5" name="rating" value="5" />
+                      <label for="star5" title="Terrific!">5 stars
+                      </label>
+                      <input type="radio" id="star4" name="rating" value="4" />
+                      <label for="star4" title="Pretty good">4 stars
+                      </label>
+                      <input type="radio" id="star3" name="rating" value="3" />
+                      <label for="star3" title="Meh">3 stars
+                      </label>
+                      <input type="radio" id="star2" name="rating" value="2" />
+                      <label for="star2" title="Kinda bad">2 stars
+                      </label>
+                      <input type="radio" id="star1" name="rating" value="1" />
+                      <label for="star1" title="Terrible">1 star
+                      </label>
+                    </fieldset>
+                    <input type="hidden" class="form-control" name="userid" value="{{user.id}}">       
+                    <input type="hidden" class="form-control" name="mpid" value="{{user.current_meal_plan.id}}">      
+                    <input type="hidden" class="form-control" name="action" value="finish">        
+                    <button type="submit" class="btn btn-primary btn-block">Submit
+                    </button>
+                    </div>
+                  </form>
+              </div>
+              <div class="modal-footer">
+              </div>
             </div>
           </div>
         </div>
+      </div>
+
+
+
+    </div>
+  </div>
+</div>
+{% else %}
+<p> There is currently no active meal plan. Please choose one from below.
+</p>
+{% endif %}
+</div>
+<div class="row justify-content-md-center my-meal-plan-form">
+  <div>
+    <h1> Saved Meal Plans
+    </h1>
+  </div>
+</div>
+<div class="row justify-content-md-center"> 
+  {% if user.meal_plan_ids %}
+  <div id="saved-meal-plans" class="col-sm-8">
+    {% for mp in user.meal_plan_ids %}
+    <details>
+      <summary>
+        <h3> {{ mp.name }}: {{ mp.ratings.avg }} stars 
+        </h3>
+      </summary>
+      <div class="container">
+        <div class="row">
+          <div class="col-2">
+          </div>
+          <div class="col">
+            <h4>Breakfast
+            </h4>
+          </div>
+          <div class="col">
+            <h4>Lunch
+            </h4>
+          </div>
+          <div class="col">
+            <h4>Dinner
+            </h4>
+          </div>
+        </div>
+        <div class="row">
+          {% for mday in mp.meal_id_list %}
+          <div class="row">
+            <div class="col-2 text">
+              Day {{ loop.index }}
+            </div>
+            {% for m in mday %}
+            <div class="col">
+              {% if not m.id is equalto dummy %}
+              <a href="/meals/{{m.id}}" class="img-link">
+                {% endif %}
+                <div id="current-meal-plan-container" class="container">
+                  <img src="{{ m.img_url }}" alt="{{m.name}}" class="image img-thumbnail">
+                  <div class="middle">
+                    <div class="text"> {{m.name}}
+                    </div>
+                  </div>
+                </div>  
+                {% if not m.id is equalto dummy %}
+              </a>
+              {% endif %}                    
+            </div>
+            {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
+        <form method=POST action="{{ url_for('my_meal_plan') }}">
+          <div class="form-group">
+            <input type="hidden" class="form-control" name="userid" value="{{user.id}}">       
+            <input type="hidden" class="form-control" name="mpid" value="{{mp.id}}">       
+            <input type="hidden" class="form-control" name="action" value="start">        
+            <button type="submit" class="btn btn-primary btn-block">Start Meal Plan
+            </button>
+            <small> 
+              <a class="nav-link" href="/meal_plans/{{mp.id}}">View plan details
+              </a>
+            </small>
+          </div>
+        </form>
+        </details>            
+      {% endfor %}
       </div>
     {% else %}
-    <p> There is currently no active meal plan. Please choose one from below.</p>
+    <p> There is currently no saved meal plans. Please go to add plan and create one now! 
+    </p>
     {% endif %}
-    </div>
-    <div class="row justify-content-md-center my-meal-plan-form">
-      <div>
-        <h1> Saved Meal Plans</h1>
-      </div>
-    </div>
-    <div class="row justify-content-md-center"> 
-      {% if user.meal_plan_ids %}
-        <div id="saved-meal-plans" class="col-sm-8">
-          {% for mp in user.meal_plan_ids %}
-          <details>
-            <summary>
-              <h3> {{ mp.name }}: {{ mp.ratings.avg }} stars </h3>
-            </summary>
-            <div class="container">
-              <div class="row">
-                <div class="col">
-                  <h4>Breakfast</h4>
-                </div>
-                <div class="col">
-                  <h4>Lunch</h4>
-                </div>
-                <div class="col">
-                  <h4>Dinner</h4>
-                </div>
-              </div>
-
-              <div class="row">
-                {% for mday in mp.meal_id_list %}
-                  <div class="row">
-                    <div class="col-2 text">
-                      Day {{ loop.index }}
-                    </div>
-                    {% for m in mday %}
-                      <div class="col">
-                        {% if not m.id is equalto dummy %}
-            <a href="/meals/{{m.id}}" class="img-link">
-            {% endif %}
-              
-                <div id="current-meal-plan-container" class="container">
-                  <img src="{{ m.img_url }}" alt="{{m.name}}" class="image img-thumbnail">
-                 
-                  <div class="middle">
-                    <div class="text"> {{m.name}}</div>
-                  </div>
-                </div>  
-                {% if not m.id is equalto dummy %}
-            	</a>
-            	{% endif %}                    
-                      </div>
-                    {% endfor %}
-                  </div>
-                {% endfor %}
-              </div>
-              <form method=POST action="{{ url_for('my_meal_plan') }}">
-                <div class="form-group">
-                  <input type="hidden" class="form-control" name="userid" value="{{user.id}}">       
-                  <input type="hidden" class="form-control" name="mpid" value="{{mp.id}}">       
-                  <input type="hidden" class="form-control" name="action" value="start">        
-                  <button type="submit" class="btn btn-primary btn-block">Start Meal Plan</button>
-                  <small> <a class="nav-link" href="/meal_plans/{{mp.id}}">View plan details</a></small>
-                </div>
-              </form>
-            </details>            
-            {% endfor %}
-        </div>
-      {% else %}
-        <p> There is currently no saved meal plans. Please go to add plan and create one now! </p>
-      {% endif %}
-    </div>
+  </div>
   <!--<footer id="pageFooter">Footer</footer>-->
+  <!-- bootstrap required scripts -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous">
+  </script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous">
+  </script>
+  {% endblock %}
 
-<!-- bootstrap required scripts -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
-{% endblock %}

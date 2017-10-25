@@ -23,14 +23,14 @@
         </small>
     </div>
     <br>
-	<div class="col-centered">
+	<div class="col-centered" style="padding:5px 200px">
 		<div class="row justify-content-md-center"
 			<p>
 				<h2>Ingredients</h2>
 			</p>
 		</div>
 		<div class="row justify-content-md-center">
-			<div class="col-centered">
+			<div class="col-centered" style="padding:5px 200px">
 			<ul>
 			{% for ingredient in meal.ingredients %}
 				<li>{{ingredient}}</li>
@@ -46,7 +46,7 @@
 			</p>
 		</div>
 		<div class="row justify-content-md-center">
-			<div class="col-centered">
+			<div class="col-centered" style="padding:5px 200px">
 			<ol>
 			{% for step in meal.recipe %}
 				<li>{{step}}</li>

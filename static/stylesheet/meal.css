@@ -1,7 +1,7 @@
 .col-centered{
     float: none;
     margin: 0 auto;
-}
+ 
 
 .meal-image{
 	width: 100%;
@@ -9,4 +9,5 @@
 	background-position: center;
   	/* Make the background image cover the area of the <div>, and clip the excess */
   	background-size: cover;
+
 }
